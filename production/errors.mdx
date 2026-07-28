@@ -61,13 +61,13 @@ The `code` field is stable and machine-readable. The `message` field is human-re
 |------|------|-------------|
 | `UPLOAD_TOO_LARGE` | 413 | File exceeds the 5 GB maximum |
 | `UNSUPPORTED_FORMAT` | 415 | File type is not supported. Accepted: MP4, MOV, AVI, WebM, MPEG, MKV |
-| `PLAN_LIMIT_EXCEEDED` | 402 | Upload would exceed your plan's storage limit |
+| `PLAN_LIMIT_EXCEEDED` | 403 | Upload would exceed your plan's storage limit |
 
 ### Search
 
 | Code | HTTP | Description |
 |------|------|-------------|
-| `SEARCH_LIMIT_EXCEEDED` | 402 | Daily search quota exhausted (Free plan) |
+| `SEARCH_LIMIT_EXCEEDED` | 403 | Daily search quota exhausted (Free plan) |
 | `SEARCH_UNAVAILABLE` | 503 | Search service temporarily unavailable — retry shortly |
 | `VALIDATION_ERROR` | 422 | A query was rejected as out of scope (e.g. asking Pureframe AI to count or summarize rather than find a moment) |
 
@@ -92,7 +92,13 @@ The `code` field is stable and machine-readable. The `message` field is human-re
 |------|------|-------------|
 | `API_KEY_NOT_FOUND` | 404 | API key ID not found |
 | `API_KEY_ALREADY_REVOKED` | 409 | Key has already been revoked |
-| `API_KEY_LIMIT_REACHED` | 402 | Account has reached the maximum number of API keys for this plan |
+| `API_KEY_LIMIT_REACHED` | 403 | Account has reached the maximum number of API keys for this plan |
+
+### Webhooks
+
+| Code | HTTP | Description |
+|------|------|-------------|
+| `WEBHOOK_LIMIT_REACHED` | 402 | Account has reached the maximum number of webhook endpoints for this plan |
 
 ### General
 
