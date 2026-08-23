@@ -498,6 +498,64 @@
         }
       }
     },
+    "/v1/videos/{video_id}/moment": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Get Video Moment",
+        "description": "Scene caption/labels covering `timestamp`, if this video has caption\nenrichment (Pro/Enterprise). This is best-effort context for the player \u2014\nnot every moment has a scene captioned, so an empty result is normal and\nnever a 404.",
+        "operationId": "get_video_moment_v1_videos__video_id__moment_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Video Id"
+            }
+          },
+          {
+            "name": "timestamp",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "title": "Timestamp"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_VideoMoment_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/search": {
       "post": {
         "tags": [
@@ -550,7 +608,7 @@
           "Search"
         ],
         "summary": "Log Search Click",
-        "description": "Implicit relevance signal: which result a user actually opened, at\nwhat rank and lane. This is the click-through data search quality tuning\nhas been missing \u2014 search_feedback only captures explicit up/down votes.\n\nRides the same PostHog pipe as the existing search_executed event (see\n_post_search) rather than a new table \u2014 same fire-and-forget semantics,\njoinable on search_id. analytics.capture() already swallows its own\nerrors, so this never fails the request.",
+        "description": "Implicit relevance signal: which result a user actually opened, at\nwhat rank and lane. Rides the existing PostHog pipe (search_result_clicked,\nunchanged) for CTR analytics, AND now also writes to search_click_logs \u2014\nthe first time click events land in Postgres \u2014 so the adaptive threshold\ntuning job (core/threshold_tuning.py) has a queryable source with no\nexternal API dependency. The Postgres write is fail-open: it enriches the\nclick signal but must never turn a click into a failed request.",
         "operationId": "log_search_click_v1_search_click_post",
         "requestBody": {
           "content": {
@@ -682,6 +740,53 @@
             }
           }
         }
+      }
+    },
+    "/v1/search/suggest": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Suggest Search",
+        "description": "Search-as-you-type suggestions from indexed dialogue/on-screen text and\npast queries. Fails open (empty list) on any error \u2014 suggestions must\nnever block or error out the search box. Not billable: unlike /v1/search,\nthis does no embedding or Qdrant work.",
+        "operationId": "suggest_search_v1_search_suggest_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchSuggestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse_list_SearchSuggestion__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/v1/agent/schema.json": {
@@ -1136,478 +1241,6 @@
           }
         }
       }
-    },
-    "/v1/orgs": {
-      "get": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "List My Orgs",
-        "description": "List every org the authenticated user belongs to (drives the org switcher).",
-        "operationId": "list_my_orgs_v1_orgs_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Create Team Org",
-        "description": "Create a team org. The creator becomes its owner.",
-        "operationId": "create_team_org_v1_orgs_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrgCreate"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/orgs/{org_id}": {
-      "patch": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Rename Org",
-        "operationId": "rename_org_v1_orgs__org_id__patch",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrgUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/orgs/{org_id}/members": {
-      "get": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "List Members",
-        "operationId": "list_members_v1_orgs__org_id__members_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/orgs/{org_id}/members/{user_id}": {
-      "patch": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Change Member Role",
-        "operationId": "change_member_role_v1_orgs__org_id__members__user_id__patch",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          },
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "User Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MemberRoleUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Remove Member",
-        "description": "Remove a member (admin+), or leave the org yourself (any role).\nOrg-owned resources \u2014 including API keys the member created \u2014 are untouched.",
-        "operationId": "remove_member_v1_orgs__org_id__members__user_id__delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          },
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "User Id"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/orgs/{org_id}/invites": {
-      "post": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Create Invite",
-        "operationId": "create_invite_v1_orgs__org_id__invites_post",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InviteCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "List Invites",
-        "operationId": "list_invites_v1_orgs__org_id__invites_get",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/orgs/{org_id}/invites/{invite_id}": {
-      "delete": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Revoke Invite",
-        "operationId": "revoke_invite_v1_orgs__org_id__invites__invite_id__delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Org Id"
-            }
-          },
-          {
-            "name": "invite_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "title": "Invite Id"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/orgs/invites/accept": {
-      "post": {
-        "tags": [
-          "Organizations"
-        ],
-        "summary": "Accept Invite",
-        "description": "Join an org via an emailed invite token. The invite is bound to the\nemail address it was sent to.",
-        "operationId": "accept_invite_v1_orgs_invites_accept_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InviteAccept"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
     }
   },
   "components": {
@@ -1727,6 +1360,22 @@
         ],
         "title": "ApiResponse[VideoDetail]"
       },
+      "ApiResponse_VideoMoment_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/VideoMoment"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ApiResponse[VideoMoment]"
+      },
       "ApiResponse_list_CollectionListItem__": {
         "properties": {
           "data": {
@@ -1766,6 +1415,26 @@
           "meta"
         ],
         "title": "ApiResponse[list[SearchResult]]"
+      },
+      "ApiResponse_list_SearchSuggestion__": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SearchSuggestion"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ApiResponse[list[SearchSuggestion]]"
       },
       "ApiResponse_list_VideoListItem__": {
         "properties": {
@@ -1902,6 +1571,28 @@
               }
             ],
             "title": "Query"
+          },
+          "raw_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Score"
+          },
+          "threshold_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Key"
           }
         },
         "type": "object",
@@ -2122,38 +1813,6 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
-      "InviteAccept": {
-        "properties": {
-          "token": {
-            "type": "string",
-            "minLength": 1,
-            "title": "Token"
-          }
-        },
-        "type": "object",
-        "required": [
-          "token"
-        ],
-        "title": "InviteAccept"
-      },
-      "InviteCreate": {
-        "properties": {
-          "email": {
-            "type": "string",
-            "maxLength": 254,
-            "title": "Email"
-          },
-          "role": {
-            "$ref": "#/components/schemas/OrgRole",
-            "default": "member"
-          }
-        },
-        "type": "object",
-        "required": [
-          "email"
-        ],
-        "title": "InviteCreate"
-      },
       "Job": {
         "properties": {
           "id": {
@@ -2209,18 +1868,6 @@
           "updated_at"
         ],
         "title": "Job"
-      },
-      "MemberRoleUpdate": {
-        "properties": {
-          "role": {
-            "$ref": "#/components/schemas/OrgRole"
-          }
-        },
-        "type": "object",
-        "required": [
-          "role"
-        ],
-        "title": "MemberRoleUpdate"
       },
       "Meta": {
         "properties": {
@@ -2290,45 +1937,6 @@
         ],
         "title": "Meta"
       },
-      "OrgCreate": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
-            "title": "Name"
-          }
-        },
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "title": "OrgCreate"
-      },
-      "OrgRole": {
-        "type": "string",
-        "enum": [
-          "member",
-          "admin",
-          "owner"
-        ],
-        "title": "OrgRole"
-      },
-      "OrgUpdate": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
-            "title": "Name"
-          }
-        },
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "title": "OrgUpdate"
-      },
       "SearchClickRequest": {
         "properties": {
           "search_id": {
@@ -2350,6 +1958,28 @@
           "result_type": {
             "type": "string",
             "title": "Result Type"
+          },
+          "raw_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Score"
+          },
+          "threshold_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Key"
           }
         },
         "type": "object",
@@ -2400,6 +2030,22 @@
               }
             ],
             "title": "Status"
+          },
+          "source_type": {
+            "type": "string",
+            "title": "Source Type",
+            "default": "r2"
+          },
+          "local_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Local Path"
           },
           "segments": {
             "items": {
@@ -2487,6 +2133,28 @@
           "rank": {
             "type": "integer",
             "title": "Rank"
+          },
+          "raw_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Score"
+          },
+          "threshold_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold Key"
           }
         },
         "type": "object",
@@ -2498,6 +2166,48 @@
           "rank"
         ],
         "title": "SearchSegment"
+      },
+      "SearchSuggestRequest": {
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "title": "Prefix"
+          },
+          "collection_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Collection Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prefix"
+        ],
+        "title": "SearchSuggestRequest"
+      },
+      "SearchSuggestion": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "text",
+          "source"
+        ],
+        "title": "SearchSuggestion"
       },
       "UpdateEndpointBody": {
         "properties": {
@@ -2919,6 +2629,31 @@
           "status"
         ],
         "title": "VideoListItem"
+      },
+      "VideoMoment": {
+        "properties": {
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Labels",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "VideoMoment"
       }
     },
     "securitySchemes": {

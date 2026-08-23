@@ -10,10 +10,10 @@ Rate limits are applied per API key. Exceeding a limit returns `429 Too Many Req
 | `POST /v1/search` | 30 requests / minute |
 | `POST /v1/upload` | 10 requests / minute |
 | `GET /v1/jobs/*` | 60 requests / minute |
-| `GET /v1/videos/*` | 60 requests / minute |
-| Collections (read) | 60 requests / minute |
-| Collections (write) | 20 requests / minute |
-| API Keys | 10 requests / minute |
+| `GET /v1/videos/{video_id}/moment` | 60 requests / minute |
+| `GET /v1/videos`, `GET /v1/videos/{video_id}`, `DELETE /v1/videos/{video_id}` | 30 requests / minute |
+| Collections (read) | 100 requests / minute |
+| Collections (write) | 30 requests / minute |
 | Agent tools | 30 requests / minute |
 
 These are throughput protections against abuse of a single key, not a signal about system capacity — see [Performance](/production/performance).
