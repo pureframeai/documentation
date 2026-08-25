@@ -504,7 +504,7 @@
           "Videos"
         ],
         "summary": "Get Video Moment",
-        "description": "Scene caption/labels covering `timestamp`, if this video has caption\nenrichment (Pro/Enterprise). This is best-effort context for the player \u2014\nnot every moment has a scene captioned, so an empty result is normal and\nnever a 404.",
+        "description": "Scene caption/labels covering `timestamp`, if this video has caption\nenrichment (Pay as you go/Enterprise). This is best-effort context for the player \u2014\nnot every moment has a scene captioned, so an empty result is normal and\nnever a 404.",
         "operationId": "get_video_moment_v1_videos__video_id__moment_get",
         "security": [
           {

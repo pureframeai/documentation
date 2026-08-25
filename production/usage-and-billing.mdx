@@ -1,11 +1,11 @@
 ---
 title: Usage and Billing
-description: Free tier limits and Pro plan pricing.
+description: Free tier limits and Pay as you go plan pricing.
 ---
 
-## Pro plan
+## Pay as you go plan
 
-Pro is credit-based, pay-as-you-go — there's no monthly subscription. You buy credits (minimum $5) and they're deducted automatically as you use the API. Enable auto top-up to reload automatically when your balance runs low.
+Pay as you go is credit-based — there's no monthly subscription. You buy credits (minimum $5) and they're deducted automatically as you use the API. Enable auto top-up to reload automatically when your balance runs low.
 
 | Usage type | Price |
 |------------|-------|
@@ -30,13 +30,13 @@ A 30-minute video costs **$1.14** to index (`30 × $0.038`). Adding captioning b
 | Max upload size | 5 GB per file |
 | Trial credit | $5, expires 14 days after first use |
 
-Free tier searches count against a daily quota that resets at midnight UTC. Storage is cumulative across all videos in your account. New accounts also receive a one-time $5 trial credit (valid 14 days) that covers indexing costs while you evaluate the product — video indexing and captioning are metered the same way on the free tier as on Pro, funded by this trial credit until it's used or expires.
+Free tier searches count against a daily quota that resets at midnight UTC. Storage is cumulative across all videos in your account. New accounts also receive a one-time $5 trial credit (valid 14 days) that covers indexing costs while you evaluate the product — video indexing and captioning are metered the same way on the free tier as on Pay as you go, funded by this trial credit until it's used or expires.
 
 Trial accounts get reminder emails 3 days and 1 day before expiry, plus a 48-hour grace period after, before hard lockout.
 
 ## What happens when you run out of credits
 
-Searches and uploads return `402` with code `INSUFFICIENT_CREDITS`. Add credits from the [Billing page](https://platform.pureframe.ai/billing) or enable auto top-up so this doesn't happen mid-project. Pro accounts get an email alert when the balance drops below $1. The dashboard shows a persistent notice once your balance hits zero, prompting you to add credits — search and indexing stay paused until you do.
+Searches and uploads return `402` with code `INSUFFICIENT_CREDITS`. Add credits from the [Billing page](https://platform.pureframe.ai/billing) or enable auto top-up so this doesn't happen mid-project. Pay as you go accounts get an email alert when the balance drops below $1. The dashboard shows a persistent notice once your balance hits zero, prompting you to add credits — search and indexing stay paused until you do.
 
 ## Billing
 

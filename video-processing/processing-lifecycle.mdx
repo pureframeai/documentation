@@ -13,13 +13,13 @@ Once uploaded, a video moves through a background pipeline before it's searchabl
 4. **Frame extraction** — frames are pulled at regular intervals (every 5 seconds) plus at every detected cut, and scanned for CSAM before anything else touches them
 5. **Visual embedding** — each extracted frame is encoded into a vector (see [Embeddings](/video-processing/embeddings))
 6. **Indexing** — vectors and transcript segments are written to the vector store and Postgres, tagged with `video_id` and `collection_id`
-7. **Scene labeling** *(Pro and Enterprise plans)* — a representative frame from each shot is classified into scene labels, and optionally captioned, then indexed as `scene` segments
+7. **Scene labeling** *(Pay as you go and Enterprise plans)* — a representative frame from each shot is classified into scene labels, and optionally captioned, then indexed as `scene` segments
 8. **OCR** — frames are sampled more densely (every 1.75s) and scanned for on-screen text, indexed as `ocr` segments
 
 Once every stage completes, the job's status flips to `done` and the video becomes searchable.
 
 <Note>
-  Scene labels and captions are Pro/Enterprise features — a `scene`-type match in search results implies the source video was indexed on a paid plan. Frame, transcript, and OCR indexing run the same way on every plan.
+  Scene labels and captions are Pay as you go/Enterprise features — a `scene`-type match in search results implies the source video was indexed on a paid plan. Frame, transcript, and OCR indexing run the same way on every plan.
 </Note>
 
 ## Processing time
