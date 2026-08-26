@@ -2031,22 +2031,6 @@
             ],
             "title": "Status"
           },
-          "source_type": {
-            "type": "string",
-            "title": "Source Type",
-            "default": "r2"
-          },
-          "local_path": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Local Path"
-          },
           "segments": {
             "items": {
               "$ref": "#/components/schemas/SearchSegment"
