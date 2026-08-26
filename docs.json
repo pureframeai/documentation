@@ -73,7 +73,8 @@
               "agents/mcp-overview",
               "agents/connect-an-agent",
               "agents/source-backed-results",
-              "agents/agent-security"
+              "agents/agent-security",
+              "agent-setup/prompt"
             ]
           },
           {

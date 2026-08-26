@@ -1,0 +1,123 @@
+---
+title: Pureframe AI Agent Setup Instructions
+description: Machine-readable setup instructions for AI agents connecting to the Pureframe AI MCP server.
+---
+
+{/* Fetched directly by AI agents (see docs.pureframe.ai/agent-setup/prompt.md). Mirrors client-configs.ts and agents/connect-an-agent.mdx — keep all three in sync. */}
+
+You are helping a user connect their AI coding tool or agent to the Pureframe AI MCP server. It gives you tools to search, list, and manage the user's indexed videos: `search_videos`, `list_collections`, `get_collection`, `get_video`, `get_job_status`, `upload_video`.
+
+## 1. Identify which client you are
+
+Determine which of these you're running as, then jump to its config below. If you can't tell, ask the user.
+
+- Claude Code
+- Claude Desktop
+- Cursor
+- VS Code (GitHub Copilot, Agent mode)
+- Codex
+- OpenCode
+
+## 2. Get an API key
+
+The user needs a Pureframe AI API key (`pf_...`). Keys can only be created from a signed-in browser session — you cannot create one yourself. Direct the user to **https://platform.pureframe.ai/settings/integrations** to create one, then wait for them to paste it back to you. A `read_only` key is enough for search and list operations.
+
+## 3. Add the MCP server config
+
+All clients run the same local server via `npx -y @pureframeai/mcp`, configured with one environment variable: `PUREFRAME_API_KEY`.
+
+**Claude Code** — run:
+
+```bash
+claude mcp add pureframe -- npx -y @pureframeai/mcp
+```
+
+Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "pureframe": {
+      "command": "npx",
+      "args": ["-y", "@pureframeai/mcp"],
+      "env": { "PUREFRAME_API_KEY": "pf_..." }
+    }
+  }
+}
+```
+
+**Claude Desktop** — add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "pureframe": {
+      "command": "npx",
+      "args": ["-y", "@pureframeai/mcp"],
+      "env": { "PUREFRAME_API_KEY": "pf_..." }
+    }
+  }
+}
+```
+
+**Cursor** — add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "pureframe": {
+      "command": "npx",
+      "args": ["-y", "@pureframeai/mcp"],
+      "env": { "PUREFRAME_API_KEY": "pf_..." }
+    }
+  }
+}
+```
+
+**VS Code** — add to `.vscode/mcp.json`. Note the root key is `servers`, not `mcpServers`:
+
+```json
+{
+  "servers": {
+    "pureframe": {
+      "command": "npx",
+      "args": ["-y", "@pureframeai/mcp"],
+      "env": { "PUREFRAME_API_KEY": "pf_..." }
+    }
+  }
+}
+```
+
+Open Copilot Chat and switch to Agent mode to use it.
+
+**Codex** — add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pureframe]
+command = "npx"
+args = ["-y", "@pureframeai/mcp"]
+
+[mcp_servers.pureframe.env]
+PUREFRAME_API_KEY = "pf_..."
+```
+
+**OpenCode** — add to `opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "pureframe": {
+      "type": "local",
+      "command": ["npx", "-y", "@pureframeai/mcp"],
+      "environment": { "PUREFRAME_API_KEY": "pf_..." }
+    }
+  }
+}
+```
+
+## 4. Confirm
+
+Restart or reload the client if needed, then confirm the connection by making a sample tool call — e.g. search the user's videos for something they mention, or list their collections.
+
+Full per-client reference: https://docs.pureframe.ai/agents/connect-an-agent
