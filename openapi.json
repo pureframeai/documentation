@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "PureFrame API",
+    "title": "Pureframe API",
     "version": "v1",
-    "description": "The PureFrame API lets you upload videos, index them for semantic search, and retrieve timestamped clips matching text queries or reference images. All endpoints require a Bearer API key (`Authorization: Bearer pf_...`).",
+    "description": "The Pureframe API lets you upload videos, index them for semantic search, and retrieve timestamped clips matching text queries or reference images. All endpoints require a Bearer API key (`Authorization: Bearer pf_...`).",
     "contact": {
       "url": "https://pureframe.ai",
       "email": "hello@pureframe.ai"
@@ -815,7 +815,7 @@
           "Agent"
         ],
         "summary": "Agent Call",
-        "description": "Invoke a PureFrame tool by name. Designed for AI agents and LLM tool-calling integrations.\n\nAvailable tools: `search_videos`, `list_collections`, `get_collection`, `get_video`.\nFetch the tool schema from `GET /v1/agent/schema.json`.\n\n`search_videos` results include `thumbnail_base64` \u2014 a base64-encoded JPEG that\nvision-capable models (GPT-4o, Claude) can consume directly.",
+        "description": "Invoke a Pureframe tool by name. Designed for AI agents and LLM tool-calling integrations.\n\nAvailable tools: `search_videos`, `list_collections`, `get_collection`, `get_video`.\nFetch the tool schema from `GET /v1/agent/schema.json`.\n\n`search_videos` results include `thumbnail_base64` \u2014 a base64-encoded JPEG that\nvision-capable models (GPT-4o, Claude) can consume directly.",
         "operationId": "agent_call_v1_agent_call_post",
         "requestBody": {
           "content": {

@@ -1,7 +1,7 @@
 {
   "projectType": "api-service",
   "projectName": "Pureframe AI",
-  "projectDescription": "PureFrame is a video intelligence API that lets you upload videos, index them for semantic search, and retrieve timestamped clips matching text queries or reference images.",
+  "projectDescription": "Pureframe AI is a video intelligence API that lets you upload videos, index them for semantic search, and retrieve timestamped clips matching text queries or reference images.",
   "theme": "luma",
   "primaryColor": "#ef7025",
   "lightColor": "#eec9bc",
