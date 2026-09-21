@@ -51,7 +51,8 @@
               "search/search-a-collection",
               "search/search-results",
               "search/exact-timestamps",
-              "search/frame-map"
+              "search/frame-map",
+              "search/intent-routing"
             ]
           },
           {

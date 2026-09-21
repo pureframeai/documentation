@@ -1,0 +1,22 @@
+---
+title: Tracking, Logo, Person & Counting Queries
+description: How to phrase a search query to trigger object tracking, logo recognition, person detection, or a counting answer.
+---
+
+Pureframe search understands more than "find this moment." Certain queries trigger a deeper, billed analysis job instead of instant retrieval:
+
+| You type | What happens |
+|---|---|
+| "track the red car" | Object tracking — every instance of "red car" gets a persistent ID and a timeline across the matching video(s). |
+| "track this logo" + an attached image | Logo recognition — the attached image becomes a reference logo, matched and tracked across matching video(s). |
+| "how many people are walking" | Counting — people are tracked, then each track is classified against "walking"; you get an exact count plus the matching clips. |
+
+## The estimate step
+
+Unlike plain search, these queries don't return instantly. A card appears showing how many videos matched and the estimated cost in millicents. Click **Run** to actually start the job — nothing is billed until you do.
+
+## Accuracy notes
+
+- Tracking and logo matching are deterministic (a detector + tracker) — counts of *tracks* are exact.
+- Counting's *predicate* (the "walking" part) is judged per-track by a vision model looking at a few sampled frames, not a hand-built classifier. It can occasionally misjudge a single track; it does not miscount the underlying number of distinct people, since that number comes from tracking, not from the model.
+- These features are unavailable on the free plan.
