@@ -3,7 +3,9 @@ title: Search a Video
 description: Working with one specific video once you've found it.
 ---
 
-There's no endpoint that scopes a search query to a single `video_id` — search always runs against a collection or your whole library, described in [Search a Collection](/search/search-a-collection). Once you have a `video_id`, either from a search result or from listing a collection, use it to fetch that video directly:
+The search endpoint does not accept `video_id` as a scope. Text searches run within a collection, while image searches can also run across your account. See [Search a collection](/search/search-a-collection).
+
+After you obtain a `video_id` from a search result or collection listing, fetch that video directly:
 
 ```bash
 curl https://api.pureframe.ai/v1/videos/vid_def456 \
@@ -25,11 +27,11 @@ curl https://api.pureframe.ai/v1/videos/vid_def456 \
 }
 ```
 
-`playback_url` is a presigned URL valid for about an hour — fetch a fresh one each time you need to play the video rather than caching it. See [Metadata](/video-processing/metadata) for every field on the video object.
+`playback_url` is a presigned URL valid for about an hour: fetch a fresh one each time you need to play the video rather than caching it. See [Metadata](/video-processing/metadata) for every field on the video object.
 
 ## If you want "more like this, in this video"
 
-If a search already returned segments from the video you care about, you have the `video_id` for each — filter the response client-side rather than making a second request. For finding visually similar moments across the same library (not scoped to one video), see [Image Search](/search/image): submit one of the video's own frame thumbnails as a reference image.
+If a search already returned segments from the video you care about, use each segment's `video_id` to filter the response client-side instead of making another request. To find visually similar moments across the same collection, submit one of the video's frame thumbnails as a reference image. See [Image search](/search/image).
 
 ## Deleting a video
 

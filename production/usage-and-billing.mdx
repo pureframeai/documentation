@@ -5,20 +5,34 @@ description: Free tier limits and Pay as you go plan pricing.
 
 ## Pay as you go plan
 
-Pay as you go is credit-based — there's no monthly subscription. You buy credits (minimum $5) and they're deducted automatically as you use the API. Enable auto top-up to reload automatically when your balance runs low.
+Pay as you go is credit-based: there's no monthly subscription. You buy credits (minimum $5) and they're deducted automatically as you use the API. Enable auto top-up to reload automatically when your balance runs low.
 
 | Usage type | Price |
 |------------|-------|
 | Video indexing | $0.038 per minute of video |
 | Captioning (optional, per video) | $0.005 per minute of video |
-| GPU compute | $0.90 per compute-hour |
+| Processing compute | $0.90 per compute-hour |
 | Search | $0.001 per search request |
 | Natural-language / agent search | $0.005 per query |
 | Storage | $0.06 per GB-month, accrued daily |
 
-### Example
+### Example calculation
 
-A 30-minute video costs **$1.14** to index (`30 × $0.038`). Adding captioning brings that to **$1.29** (`+ 30 × $0.005`). GPU compute time is billed separately based on actual processing time, typically a few cents for a 30-minute video. Running 1,000 searches costs $1.00.
+For a 30-minute video with captioning enabled:
+
+| Charge | Calculation | Cost |
+|--------|-------------|------|
+| Video indexing | `30 minutes x $0.038` | **$1.14** |
+| Captioning | `30 minutes x $0.005` | **$0.15** |
+| Subtotal | `$1.14 + $0.15` | **$1.29** |
+
+Processing compute is billed separately according to the compute time used. At $0.90 per compute-hour, the formula is:
+
+```text
+processing compute cost = compute hours x $0.90
+```
+
+For search, 1,000 standard requests cost **$1.00** (`1,000 x $0.001`).
 
 ## Free tier limits
 
@@ -30,13 +44,13 @@ A 30-minute video costs **$1.14** to index (`30 × $0.038`). Adding captioning b
 | Max upload size | 5 GB per file |
 | Trial credit | $5, expires 14 days after first use |
 
-Free tier searches count against a daily quota that resets at midnight UTC. Storage is cumulative across all videos in your account. New accounts also receive a one-time $5 trial credit (valid 14 days) that covers indexing costs while you evaluate the product — video indexing and captioning are metered the same way on the free tier as on Pay as you go, funded by this trial credit until it's used or expires.
+Free tier searches count against a daily quota that resets at midnight UTC. Storage is cumulative across all videos in your account. New accounts also receive a one-time $5 trial credit (valid 14 days) that covers indexing costs while you evaluate the product: video indexing and captioning are metered the same way on the free tier as on Pay as you go, funded by this trial credit until it's used or expires.
 
 Trial accounts get reminder emails 3 days and 1 day before expiry, plus a 48-hour grace period after, before hard lockout.
 
 ## What happens when you run out of credits
 
-Searches and uploads return `402` with code `INSUFFICIENT_CREDITS`. Add credits from the [Billing page](https://platform.pureframe.ai/billing) or enable auto top-up so this doesn't happen mid-project. Pay as you go accounts get an email alert when the balance drops below $1. The dashboard shows a persistent notice once your balance hits zero, prompting you to add credits — search and indexing stay paused until you do.
+Searches and uploads return `402` with code `INSUFFICIENT_CREDITS`. Add credits from the [Billing page](https://platform.pureframe.ai/billing) or enable auto top-up so this doesn't happen mid-project. Pay as you go accounts get an email alert when the balance drops below $1. The dashboard shows a persistent notice once your balance hits zero, prompting you to add credits: search and indexing stay paused until you do.
 
 ## Billing
 

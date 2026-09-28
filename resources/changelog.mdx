@@ -3,40 +3,40 @@ title: Changelog
 description: What's new in Pureframe AI.
 ---
 
-## July 2026 — Pureframe AI 1.0
+## July 2026: Pureframe AI 1.0
 
 Pureframe AI is out of beta. Everything below ships as part of 1.0:
 
-**Official SDKs** — the [Python SDK](/sdks/python-sdk) (`pip install pureframe-ai`) and [JavaScript SDK](/sdks/javascript-sdk) (`npm install @pureframeai/sdk`) are now published, generated directly from the OpenAPI spec so they always match the live API.
+**Official SDKs**: the [Python SDK](/sdks/python-sdk) (`pip install pureframe-ai`) and [JavaScript SDK](/sdks/javascript-sdk) (`npm install @pureframeai/sdk`) are now available. Both are generated from the public OpenAPI specification.
 
-**MCP server: upload + job tools** — the [MCP server](/sdks/mcp-server) now includes `upload_video` (index a local file straight from your AI agent) and `get_job_status`, alongside search, collections, and video tools. Ask Claude to "upload this folder and tell me when it's searchable."
+**MCP server: upload + job tools**: the [MCP server](/sdks/mcp-server) now includes `upload_video` (index a local file straight from your AI agent) and `get_job_status`, alongside search, collections, and video tools. Ask Claude to "upload this folder and tell me when it's searchable."
 
-**Trial lifecycle** — trial accounts now get reminder emails 3 days and 1 day before expiry, plus a 48-hour grace period after — no more surprise hard stops mid-project.
+**Trial lifecycle**: trial accounts now receive reminder emails three days and one day before expiry, followed by a 48-hour grace period.
 
-**Storage billing** — Pay as you go accounts are billed for actual bytes stored at $0.06/GB-month, accrued daily. Deleting videos frees the charge immediately. See [Usage and Billing](/production/usage-and-billing).
+**Storage billing**: Pay as you go accounts are billed for actual bytes stored at $0.06/GB-month, accrued daily. Deleting videos frees the charge immediately. See [Usage and Billing](/production/usage-and-billing).
 
-**Low-balance email alerts** — Pay as you go accounts now get an email when their credit balance drops below $1, so you don't get caught by a mid-project `INSUFFICIENT_CREDITS` error.
+**Low-balance email alerts**: Pay as you go accounts now get an email when their credit balance drops below $1, so you don't get caught by a mid-project `INSUFFICIENT_CREDITS` error.
 
-**Turnstile bot protection** — sign-in and account creation are now protected by invisible Cloudflare Turnstile verification, with no impact on legitimate users.
+**Bot protection**: sign-in and account creation now include automated abuse protection.
 
-**Improved search recall** — search queries now go through LLM-based query expansion before ranking when the literal query finds nothing, merged with the original results — broader, more forgiving matches for short or ambiguous queries.
+**Improved search recall**: short and ambiguous text queries can now return more relevant matches.
 
-**New onboarding walkthrough** — first-time users now see a guided welcome tour highlighting collections, search, and Frame Map.
+**New onboarding walkthrough**: first-time users now see a guided welcome tour highlighting collections, search, and Frame Map.
 
 ## June 2026
 
-**Image search refinements** — reverse image search no longer requires a `collection_id` (search your whole library with an image), and now rejects reference images smaller than 64×64 pixels to avoid low-quality matches.
+**Image search refinements**: reverse image search no longer requires a `collection_id` (search your whole library with an image), and now rejects reference images smaller than 64×64 pixels to avoid low-quality matches.
 
 ## May 2026
 
-**SigLIP visual encoder** — Pureframe AI's visual search moved from CLIP to SigLIP (`google/siglip-so400m-patch14-384`, 1152-dim embeddings), improving match quality across the board. Existing libraries were re-indexed automatically.
+**Improved visual search**: visual matching now returns more relevant results across a wider range of footage.
 
-**Hybrid search modes** — search requests now accept a `modes` parameter instead of a single mode string, so you can restrict a query to specific signal types or search all of them at once.
+**Hybrid search modes**: search requests now accept a `modes` parameter instead of a single mode string, so you can restrict a query to specific signal types or search all of them at once.
 
-**Per-segment frame thumbnails** — search results now return a thumbnail for each matched segment individually, instead of one thumbnail per video.
+**Per-segment frame thumbnails**: search results now return a thumbnail for each matched segment individually, instead of one thumbnail per video.
 
-**Frame Map (Beta)** — a new spatial canvas view that projects every indexed frame onto a 2D map organized by visual similarity, with clustering, a minimap, and a preview strip. See [Frame Map](/search/frame-map).
+**Frame Map (Beta)**: a new spatial canvas view that projects every indexed frame onto a 2D map organized by visual similarity, with clustering, a minimap, and a preview strip. See [Frame Map](/search/frame-map).
 
 ---
 
-Looking for the full commit-level history? Pureframe AI's core services are under active development — this page covers customer-visible changes only.
+This changelog covers customer-visible changes. It does not include internal implementation changes.

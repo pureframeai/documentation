@@ -1,34 +1,34 @@
 ---
 title: Security
-description: What Pureframe AI guarantees today, and what it doesn't yet.
+description: Review Pureframe AI security controls, current limitations, and reporting guidance.
 ---
 
-## What's in place today
+## Current controls
 
-**Encryption in transit** — all traffic between clients and the API uses HTTPS (TLS 1.2+). Connections from the API to every subprocessor (database, vector store, object storage, GPU pipeline) are also TLS.
+**Encryption in transit**: connections to the Pureframe AI API use HTTPS with TLS 1.2 or later.
 
-**Encryption at rest** — video files, frames, database records, and vectors are encrypted at rest by the underlying storage providers (Cloudflare R2, Supabase Postgres, Qdrant Cloud).
+**Encryption at rest**: uploaded content and service data are encrypted at rest.
 
-**Account isolation** — every database query, vector search, and storage path is filtered by your account ID. One customer cannot read another's videos, transcripts, or search results through the API.
+**Account isolation**: authenticated requests are scoped to the account associated with the credential.
 
-**API key handling** — keys are stored as a SHA-256 hash; the plain secret is shown once at creation and never again, even to Pureframe AI. Key creation and revocation require a web session, not another API key, so a leaked API key alone can't be used to mint or revoke keys.
+**API key controls**: a key's secret is shown only when you create it. Key creation and revocation require an authenticated dashboard session. Use separate keys for separate integrations and revoke a key if it may be compromised.
 
-**Rate limiting** — every endpoint is rate-limited per key to contain abuse; see [Rate Limits](/production/rate-limits).
+**Rate limiting**: API requests are rate-limited per key. See [Rate limits](/production/rate-limits).
 
-## What Pureframe AI does not yet guarantee
+## Current limitations
 
-Being upfront about this matters more than sounding reassuring. As of today, Pureframe AI does not have:
+The public service does not currently include the following assurances:
 
 | Gap | Status |
 |-----|--------|
-| SOC 2 Type II certification | Not yet started |
-| Independent penetration test | Not yet performed |
+| SOC 2 Type II certification | Not available |
+| Independent penetration test report | Not available |
 | Formal uptime SLA | No contractual commitment |
-| Documented incident response SLA | Informal process only |
+| Contractual incident response SLA | Not included |
 | EU or regional data residency | US-only infrastructure |
 
-If any of these are a hard requirement for your organization, [contact us](mailto:hello@pureframe.ai) before sending production or sensitive content — enterprise agreements can address specific requirements on a case-by-case basis, but they aren't standing guarantees of the public API today.
+If your organization requires one of these assurances, [contact us](mailto:hello@pureframe.ai) before uploading production or sensitive content. Do not assume an Enterprise agreement includes a control unless it appears in your contract.
 
 ## Reporting a vulnerability
 
-If you find a security issue, email **security@pureframe.ai**. Include enough detail to reproduce it. Give Pureframe AI a reasonable window to fix the issue before any public disclosure.
+Email **security@pureframe.ai** with a description of the issue, its potential impact, and the steps needed to reproduce it. Do not include sensitive customer content unless the security team asks for it through an approved channel.

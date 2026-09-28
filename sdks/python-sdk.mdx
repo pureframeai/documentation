@@ -3,7 +3,7 @@ title: Python SDK
 description: Official Python client, generated from the OpenAPI spec.
 ---
 
-The PyPI distribution is `pureframe-ai`; the import name is `pureframe`. It's generated directly from the API spec, so it's always in sync with the latest endpoints, and requires Python 3.9+.
+The PyPI distribution is `pureframe-ai`, and the import name is `pureframe`. The SDK is generated from the public API specification and requires Python 3.9 or later.
 
 ```bash
 pip install pureframe-ai
@@ -42,7 +42,7 @@ results = client.search.search(
 )
 for video in results.data:
     for seg in video.segments:
-        print(f"{video.filename} @ {seg.timestamp_start:.1f}s — {seg.score:.2f}")
+        print(f"{video.filename} @ {seg.timestamp_start:.1f}s: {seg.score:.2f}")
 ```
 
 We recommend reading your API key from an environment variable rather than hardcoding it:
@@ -74,4 +74,4 @@ An async client is also available for use inside `asyncio` applications, mirrori
 
 ## Full reference
 
-Every method, parameter, and response type is documented in the [API Reference](/api-reference/overview) — the SDK is a thin, typed wrapper over the same REST endpoints.
+See the [API reference](/api-reference/overview) for available endpoints, parameters, and response types.

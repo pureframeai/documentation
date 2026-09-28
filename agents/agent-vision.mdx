@@ -1,25 +1,25 @@
 ---
 title: Agent Vision
-description: Give any AI agent the ability to see and search your video library.
+description: Give a vision-capable agent searchable video context through MCP or HTTP.
 ---
 
-Agent Vision lets any AI model search your video library, retrieve video details, and see matched frames directly — without fetching URLs or managing storage.
+Agent vision lets a compatible AI client search your video library, retrieve video details, and inspect matched frames.
 
 ## How it works
 
-When an agent calls `search_videos`, results include `thumbnail_base64` — a base64-encoded JPEG of the matched frame. Vision-capable models can see this image in the same turn:
+When an agent calls `search_videos`, results include `thumbnail_base64`, a base64-encoded JPEG of the matched frame. A vision-capable model can use this image without fetching a separate URL:
 
-1. Agent searches for a moment in video
-2. Pureframe AI returns the matched frame as base64
-3. Agent reads the visual content and answers follow-up questions
+1. The agent searches for a video segment.
+2. Pureframe AI returns matching metadata and a frame image.
+3. The model uses the returned evidence to answer the request.
 
-No URL fetching, no extra round trips.
+The model may still make mistakes. Ask it to cite the source video and timestamp, and let users open the returned playback URL for verification.
 
 ## Two ways to connect
 
-**MCP** — the simplest path for Claude, Cursor, VS Code, Codex, OpenCode, and any other MCP-compatible client. See [MCP Overview](/agents/mcp-overview) and [Connect an Agent](/agents/connect-an-agent).
+**MCP**: use an MCP-compatible client such as Claude, Cursor, VS Code, Codex, or OpenCode. See [MCP overview](/agents/mcp-overview) and [Connect an agent](/agents/connect-an-agent).
 
-**Direct HTTP / function calling** — for OpenAI, Gemini, or any LLM with function calling, fetch the OpenAI-compatible schema and wire it directly:
+**Direct HTTP or function calling**: fetch the OpenAI-compatible tool schema when you are building your own agent integration:
 
 ```python
 import httpx
@@ -41,12 +41,17 @@ result = httpx.post(f"{BASE}/v1/agent/call", headers=HEADERS, json={
 }).json()
 ```
 
-Pass `schema` directly to `client.chat.completions.create(tools=schema)` for OpenAI or the equivalent for other providers.
+Pass `schema` to the tool configuration supported by your model provider.
 
-## Example: search + vision with Claude
+## Search and inspect a frame with Claude
+
+Set `ANTHROPIC_MODEL` to a vision-capable model available to your Anthropic account.
 
 ```python
-import anthropic, httpx
+import os
+
+import anthropic
+import httpx
 
 client = anthropic.Anthropic()
 pf = {"Authorization": "Bearer pf_..."}
@@ -61,7 +66,7 @@ clips = httpx.post("https://api.pureframe.ai/v1/agent/call",
 frame_b64 = clips[0]["thumbnail_base64"]
 
 response = client.messages.create(
-    model="claude-opus-4-7",
+    model=os.environ["ANTHROPIC_MODEL"],
     max_tokens=1024,
     messages=[{
         "role": "user",
@@ -89,4 +94,4 @@ print(response.content[0].text)
 | `thumbnail_url` | Presigned URL to the matched frame |
 | `thumbnail_base64` | Base64 JPEG for direct use with vision models |
 
-Every answer an agent gives from these fields is traceable back to an exact clip — see [Source-backed Results](/agents/source-backed-results).
+Use these fields to make an answer verifiable. See [Source-backed results](/agents/source-backed-results).

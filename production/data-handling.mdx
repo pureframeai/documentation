@@ -5,39 +5,46 @@ description: What Pureframe AI stores, for how long, and what happens when you d
 
 ## Ownership
 
-You own everything you upload. Pureframe AI processes it to provide the service — indexing, search, storage — and for no other purpose. Your video content is never used to train models.
+You retain ownership of the content you upload. Pureframe AI processes that content to provide video storage, processing, and search. Pureframe AI does not use uploaded video content to train models.
 
-## What's stored, and where
+## What Pureframe AI stores
 
-| Data | Where | Kept until |
-|------|-------|------------|
-| Original video file | Cloudflare R2 | You delete the video |
-| Extracted frames | Cloudflare R2 | You delete the video |
-| Frame and scene embeddings | Qdrant | You delete the video |
-| Transcript segments | Postgres | You delete the video |
-| Video and collection metadata | Postgres | You delete the video or collection |
-| Credit transaction history | Postgres | 7 years (financial record requirement) |
-| Search logs | Postgres | Purged after 12 months |
+{/* TODO: Confirm the published retention periods with the legal, finance, and security owners. Verify that production systems enforce each period before publication. */}
 
-Presigned URLs (`video_url`, `thumbnail_url`, `playback_url`) aren't stored at all — they're generated on demand and expire after about an hour.
+| Data | Purpose | Retention |
+|------|---------|-----------|
+| Original video | Playback and processing | Until you delete the video |
+| Derived visual data | Visual search and thumbnails | Until you delete the video |
+| Transcript segments | Transcript search | Until you delete the video |
+| Video and collection metadata | Library management | Until you delete the related resource |
+| Credit transaction history | Billing records | 7 years |
+| Search logs | Service operation and improvement | Up to 12 months |
+
+Playback and thumbnail URLs expire after approximately one hour. Store the resource ID instead of storing an expiring URL.
 
 ## Deleting a video or collection
 
-`DELETE /v1/videos/{video_id}` and `DELETE /v1/collections/{collection_id}` are immediate and permanent — the video file, extracted frames, vectors, and transcript segments are all removed. There's no soft-delete or recovery window at the video/collection level.
+{/* TODO: Confirm deletion completion timing and backup retention. Document both after owner approval. */}
+
+`DELETE /v1/videos/{video_id}` permanently deletes the video and its derived searchable data. Deleting a collection with `DELETE /v1/collections/{collection_id}` also deletes the videos it contains.
+
+These API operations do not provide an undo or recovery window. Confirm the resource ID before sending a delete request.
 
 ## Deleting your account
 
-Account deletion has a 30-day grace period, initiated from Settings → Account → Danger Zone in the web app (not available via API key — this requires a web session, since it's irreversible). During the grace period you can cancel. After it elapses:
+Start account deletion from **Settings → Account → Danger Zone** in the dashboard. You can cancel during the 30-day grace period. Account deletion is not available through an API key.
 
-- All videos, collections, vectors, and transcripts are permanently deleted
+After the grace period:
+
+- Videos, collections, and derived searchable data are permanently deleted
 - Your user profile is removed
 - Credit transaction history is retained but anonymized (required for financial recordkeeping)
-- An anonymized record (plan, spend, tenure — no identifying content) is kept for aggregate business metrics
+- An anonymized record of plan, spend, and tenure is kept for aggregate business metrics. It contains no identifying content
 
 ## Cross-border data transfer
 
-All infrastructure — object storage, vector database, and the processing pipeline — is hosted in the US. Pureframe AI does not currently offer EU data residency. If your organization requires in-region storage for compliance reasons, [contact us](mailto:hello@pureframe.ai) before onboarding sensitive content.
+Pureframe AI hosts customer content and service data in the United States. Regional data residency is not currently available. If your organization requires in-region processing or storage, [contact us](mailto:hello@pureframe.ai) before uploading sensitive content.
 
 ## Isolation
 
-Every query — database, vector search, and object storage path — is filtered by your account ID. There's no cross-account visibility into another customer's videos, transcripts, or search results. See [Security](/production/security) for how this is enforced.
+API requests are scoped to the account associated with the credential. See [Security](/production/security) for related controls and current limitations.

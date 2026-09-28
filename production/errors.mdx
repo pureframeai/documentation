@@ -68,7 +68,7 @@ The `code` field is stable and machine-readable. The `message` field is human-re
 | Code | HTTP | Description |
 |------|------|-------------|
 | `SEARCH_LIMIT_EXCEEDED` | 403 | Daily search quota exhausted (Free plan) |
-| `SEARCH_UNAVAILABLE` | 503 | Search service temporarily unavailable — retry shortly |
+| `SEARCH_UNAVAILABLE` | 503 | Search service temporarily unavailable: retry shortly |
 | `VALIDATION_ERROR` | 422 | A query was rejected as out of scope (e.g. asking Pureframe AI to count or summarize rather than find a moment) |
 
 ### Billing and credits
@@ -77,7 +77,7 @@ The `code` field is stable and machine-readable. The `message` field is human-re
 |------|------|-------------|
 | `INSUFFICIENT_CREDITS` | 402 | Account has no remaining credits |
 | `PAYMENT_METHOD_REQUIRED` | 402 | Action requires a saved payment method |
-| `PAYMENT_FAILED` | 402 | Stripe payment attempt failed |
+| `PAYMENT_FAILED` | 402 | Payment attempt failed |
 | `BILLING_NOT_CONFIGURED` | 402 | No billing account associated with this user |
 
 ### Jobs
@@ -104,7 +104,7 @@ The `code` field is stable and machine-readable. The `message` field is human-re
 
 | Code | HTTP | Description |
 |------|------|-------------|
-| `VALIDATION_ERROR` | 422 | Request parameter failed validation — check the `message` field |
+| `VALIDATION_ERROR` | 422 | Request parameter failed validation: check the `message` field |
 | `NOT_FOUND` | 404 | Generic not found |
 | `INTERNAL_ERROR` | 500 | Unexpected server error |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests — retry with exponential backoff |
+| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests: retry with exponential backoff |

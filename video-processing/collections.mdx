@@ -3,7 +3,7 @@ title: Collections
 description: Organize videos into named groups and scope searches to a specific library.
 ---
 
-Collections are named groups of videos. Every video belongs to exactly one collection. When you search, you can scope the query to a single collection — which is faster and more precise than searching your entire library.
+Collections are named groups of videos. Every video belongs to exactly one collection. When you search, you can scope the query to a single collection. This can improve performance and reduce unrelated matches.
 
 ## Creating a collection
 
@@ -29,7 +29,7 @@ Collection names must be unique within your account.
 
 ## Uploading a video to a collection
 
-Pass `collection_id` in the upload form. A collection must exist before you can upload to it — see [Upload Videos](/video-processing/upload-videos).
+Pass `collection_id` in the upload form. A collection must exist before you can upload to it. See [Upload videos](/video-processing/upload-videos).
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/upload \
@@ -72,7 +72,7 @@ Returns `204 No Content` on success.
 | Field | Type | Description |
 |-------|------|--------------|
 | `id` | string | Unique collection ID |
-| `name` | string | Display name — unique per account |
+| `name` | string | Display name: unique per account |
 | `video_count` | integer | Number of videos in this collection |
 | `total_duration_secs` | number | Total video duration across all videos. Present only on single-collection GET |
 | `storage_bytes` | integer | Total storage used by this collection. Present only on single-collection GET |

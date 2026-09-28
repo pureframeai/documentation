@@ -51,8 +51,7 @@
               "search/search-a-collection",
               "search/search-results",
               "search/exact-timestamps",
-              "search/frame-map",
-              "search/intent-routing"
+              "search/frame-map"
             ]
           },
           {
@@ -62,7 +61,7 @@
               "video-processing/processing-lifecycle",
               "video-processing/collections",
               "video-processing/transcripts",
-              "video-processing/embeddings",
+              "video-processing/search-signals",
               "video-processing/metadata",
               "video-processing/processing-status"
             ]
@@ -128,6 +127,12 @@
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/video-processing/embeddings",
+      "destination": "/video-processing/search-signals"
+    }
+  ],
   "footer": {
     "socials": {
       "github": "https://github.com/pureframeai",

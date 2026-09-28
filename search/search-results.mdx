@@ -1,6 +1,6 @@
 ---
 title: Search Results
-description: The shape of a search response — video groups, segments, and every field on them.
+description: Understand video groups, matching segments, and search metadata.
 ---
 
 Results are grouped by video. Each video in `data` carries a list of matching segments:
@@ -34,13 +34,13 @@ Results are grouped by video. Each video in `data` carries a list of matching se
 |-------|------|--------------|
 | `timestamp_start` / `timestamp_end` | number | Segment boundaries in seconds |
 | `score` | number | Relevance from 0 to 1 |
-| `type` | string | Which signal matched — `frame`, `transcript`, `scene`, or `ocr`. See [Combined Queries](/search/combined-queries) |
+| `type` | string | Which signal matched: `frame`, `transcript`, `scene`, or `ocr`. See [Combined Queries](/search/combined-queries) |
 | `text_content` | string \| null | Transcribed speech or caption text, if this segment has any |
 | `bbox` | object \| null | Bounding box within the frame, present on some `ocr` matches |
 | `video_url` | string \| null | Presigned URL to stream the full video (valid ~1 hour) |
 | `thumbnail_url` | string \| null | Presigned URL to the matched frame image (valid ~1 hour) |
 | `hidden` | boolean | Whether you've marked this segment hidden via [search feedback](/search/search-results#feedback) |
-| `rank` | integer | Position in this page of results — use it when logging a click, see below |
+| `rank` | integer | Position in this page of results: use it when logging a click, see below |
 
 ## Video group fields
 
@@ -66,11 +66,11 @@ Results are grouped by video. Each video in `data` carries a list of matching se
 }
 ```
 
-`search_id` identifies this specific search — pass it back when logging a click (below) so click-through can be attributed to the query that produced it. `facets` is only present when `scene` labels were found in the results, and gives you counts to build filter UI without a second request.
+`search_id` identifies the search. Include it when you log a result click. `facets` is present when the response includes scene-label counts that you can use in a filter interface.
 
 ## Logging a click
 
-Tell Pureframe AI which result a user actually opened — this is the signal used to tune ranking over time.
+Log the result a user opened to help improve search relevance.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search/click \
@@ -87,7 +87,7 @@ curl -X POST https://api.pureframe.ai/v1/search/click \
 
 ## Feedback
 
-Mark a specific segment up or down for a query — this feeds into future ranking and, if downvoted, excludes that segment from your own future searches.
+Mark a segment up or down for a query. A downvote hides that segment from future searches for the same account.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search/feedback \
@@ -98,4 +98,4 @@ curl -X POST https://api.pureframe.ai/v1/search/feedback \
   -F "query=pricing objection"
 ```
 
-`signal` is `up` or `down`. Feedback is personal to the API key's creator — a key with no owning user (e.g. one shared across a team where the creator has left) can't submit feedback.
+`signal` accepts `up` or `down`. Feedback requires an API key associated with an active account user.

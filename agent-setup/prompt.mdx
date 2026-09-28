@@ -1,9 +1,9 @@
 ---
-title: Pureframe AI Agent Setup Instructions
+title: Agent Setup
 description: Machine-readable setup instructions for AI agents connecting to the Pureframe AI MCP server.
 ---
 
-{/* Fetched directly by AI agents (see docs.pureframe.ai/agent-setup/prompt.md). Mirrors client-configs.ts and agents/connect-an-agent.mdx — keep all three in sync. */}
+{/* This page is written for direct use by AI agents. Keep commands and field names exact. */}
 
 You are helping a user connect their AI coding tool or agent to the Pureframe AI MCP server. It gives you tools to search, list, and manage the user's indexed videos: `search_videos`, `list_collections`, `get_collection`, `get_video`, `get_job_status`, `upload_video`.
 
@@ -20,19 +20,21 @@ Determine which of these you're running as, then jump to its config below. If yo
 
 ## 2. Get an API key
 
-The user needs a Pureframe AI API key (`pf_...`). Keys can only be created from a signed-in browser session — you cannot create one yourself. Direct the user to **https://platform.pureframe.ai/settings/integrations** to create one, then wait for them to paste it back to you. A `read_only` key is enough for search and list operations.
+The user needs a Pureframe AI API key (`pf_...`). Keys can only be created from a signed-in browser session. Direct the user to **https://platform.pureframe.ai/settings/api-keys** and recommend a `read_only` key for search and list operations.
+
+Do not ask the user to paste the key into chat. Ask them to set it in the client configuration or a local environment variable. Use a placeholder such as `pf_...` in any configuration you generate.
 
 ## 3. Add the MCP server config
 
 All clients run the same local server via `npx -y @pureframeai/mcp`, configured with one environment variable: `PUREFRAME_API_KEY`.
 
-**Claude Code** — run:
+**Claude Code**: run:
 
 ```bash
 claude mcp add pureframe -- npx -y @pureframeai/mcp
 ```
 
-Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/.claude.json`:
+Then ask the user to set `PUREFRAME_API_KEY` in their environment, or add it manually to `~/.claude.json`:
 
 ```json
 {
@@ -46,7 +48,7 @@ Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/
 }
 ```
 
-**Claude Desktop** — add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+**Claude Desktop**: add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
@@ -60,7 +62,7 @@ Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/
 }
 ```
 
-**Cursor** — add to `.cursor/mcp.json`:
+**Cursor**: add to `.cursor/mcp.json`:
 
 ```json
 {
@@ -74,7 +76,7 @@ Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/
 }
 ```
 
-**VS Code** — add to `.vscode/mcp.json`. Note the root key is `servers`, not `mcpServers`:
+**VS Code**: add to `.vscode/mcp.json`. Note the root key is `servers`, not `mcpServers`:
 
 ```json
 {
@@ -90,7 +92,7 @@ Then set `PUREFRAME_API_KEY` in the user's shell profile, or add manually to `~/
 
 Open Copilot Chat and switch to Agent mode to use it.
 
-**Codex** — add to `~/.codex/config.toml`:
+**Codex**: add to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.pureframe]
@@ -101,7 +103,7 @@ args = ["-y", "@pureframeai/mcp"]
 PUREFRAME_API_KEY = "pf_..."
 ```
 
-**OpenCode** — add to `opencode.json`:
+**OpenCode**: add to `opencode.json`:
 
 ```json
 {
@@ -118,6 +120,6 @@ PUREFRAME_API_KEY = "pf_..."
 
 ## 4. Confirm
 
-Restart or reload the client if needed, then confirm the connection by making a sample tool call — e.g. search the user's videos for something they mention, or list their collections.
+Restart or reload the client if needed, then confirm the connection by making a sample tool call: e.g. search the user's videos for something they mention, or list their collections.
 
 Full per-client reference: https://docs.pureframe.ai/agents/connect-an-agent

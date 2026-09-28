@@ -3,7 +3,7 @@ title: JavaScript SDK
 description: Official TypeScript/Node.js client, generated from the OpenAPI spec.
 ---
 
-The npm package is `@pureframeai/sdk`. It's generated directly from the API spec and ships full TypeScript types for every request and response. Requires Node.js 18+.
+The npm package is `@pureframeai/sdk`. It is generated from the public API specification and includes TypeScript request and response types. It requires Node.js 18 or later.
 
 ```bash
 npm install @pureframeai/sdk
@@ -43,12 +43,12 @@ const results = await client.search.search({
 })
 for (const video of results.data) {
   for (const seg of video.segments) {
-    console.log(`${video.filename} @ ${seg.timestamp_start}s — score: ${seg.score}`)
+    console.log(`${video.filename} @ ${seg.timestamp_start}s, score: ${seg.score}`)
   }
 }
 ```
 
-The client's exported class is `PureframeClient` — note the lowercase "f", which matches the npm package name (`@pureframeai/sdk`), not the product's display capitalization.
+The client's exported class is `PureframeClient`. Note the lowercase "f", which matches the npm package name (`@pureframeai/sdk`), not the product's display capitalization.
 
 We recommend reading your API key from an environment variable:
 
@@ -66,4 +66,4 @@ The client is organized into resources matching the REST API: `client.collection
 
 ## Full reference
 
-Every method, parameter, and response type is documented in the [API Reference](/api-reference/overview) — the SDK is a thin, typed wrapper over the same REST endpoints.
+See the [API reference](/api-reference/overview) for available endpoints, parameters, and response types.

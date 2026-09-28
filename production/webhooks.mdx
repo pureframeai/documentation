@@ -3,7 +3,7 @@ title: Webhooks
 description: Get real-time HTTP notifications when events happen in your account.
 ---
 
-Webhooks let Pureframe AI notify your server the moment something happens — a video finishes processing, a job fails, your credit balance runs low — instead of you polling for it.
+Webhooks let Pureframe AI notify your server when a video finishes processing, a job fails, or your credit balance runs low. This removes the need to poll for these events.
 
 ## Verifying webhook requests
 
@@ -21,7 +21,7 @@ WEBHOOK_SECRET = "whsec_..."  # from the endpoint's creation response
 
 @app.post("/webhooks/pureframe")
 def handle_webhook():
-    body = request.get_data()  # raw bytes — must match exactly what was signed
+    body = request.get_data()  # raw bytes: must match exactly what was signed
     signature = request.headers.get("X-Pureframe-Signature", "")
     expected = "sha256=" + hmac.new(WEBHOOK_SECRET.encode(), body, hashlib.sha256).hexdigest()
 
@@ -85,10 +85,10 @@ curl -X POST https://api.pureframe.ai/v1/webhooks \
 ```
 
 <Warning>
-  The `secret` field is only returned once, at creation. Store it — you'll need it to verify incoming deliveries. There is no way to retrieve it again; delete the endpoint and create a new one if you lose it.
+  The `secret` field is only returned once, at creation. Store it: you'll need it to verify incoming deliveries. There is no way to retrieve it again; delete the endpoint and create a new one if you lose it.
 </Warning>
 
-The target URL must be publicly reachable — Pureframe AI rejects URLs pointing at private, loopback, or link-local addresses (e.g. `10.0.0.0/8`, `127.0.0.1`, `169.254.169.254`) both when you register the endpoint and again at delivery time.
+The target URL must be publicly reachable: Pureframe AI rejects URLs pointing at private, loopback, or link-local addresses (e.g. `10.0.0.0/8`, `127.0.0.1`, `169.254.169.254`) both when you register the endpoint and again at delivery time.
 
 **Other endpoint operations:**
 
@@ -118,9 +118,9 @@ curl -X DELETE https://api.pureframe.ai/v1/webhooks/wh_abc123 -H "Authorization:
 | `credits.exhausted` | Account credit balance reaches zero |
 | `account.deleted` | A user's account is permanently deleted |
 
-Subscribe to only the events you need — deliveries for unsubscribed events are never sent to that endpoint.
+Subscribe to only the events you need: deliveries for unsubscribed events are never sent to that endpoint.
 
-## Handling requests and retry logic
+## Handling requests and failed deliveries
 
 Every delivery is a `POST` with this envelope:
 
@@ -133,7 +133,7 @@ Every delivery is a `POST` with this envelope:
 }
 ```
 
-Return any `2xx` status to acknowledge receipt. If your endpoint doesn't respond successfully, Pureframe AI retries up to **2 more times** — once after 30 seconds, once after 60 seconds — then stops and marks the delivery `failed`. There's no long-tail retry window; if your endpoint might be unavailable for longer than that, use the manual redelivery endpoint below to recover missed events.
+Return any `2xx` status to acknowledge receipt. Check the endpoint's delivery history for unsuccessful requests. You can manually redeliver a failed delivery by using the endpoint below.
 
 ## Testing and signature verification
 

@@ -1,28 +1,26 @@
 ---
 title: Performance
-description: How Pureframe AI keeps search fast, and what affects latency.
+description: Reduce search latency and design integrations for variable response times.
 ---
 
-## Query embedding cache
+Search latency varies with the request and the amount of content being searched. Measure performance with your own library and query patterns before setting client timeouts.
 
-Repeated text queries don't re-run the embedding model. Pureframe AI caches the last 512 encoded queries — an exact repeat of a recent query skips encoding entirely and goes straight to the vector search step.
+## Improve request performance
 
-## Parallel modality search
+- Pass `collection_id` when you know which collection contains the content.
+- Request only the search modes your workflow needs.
+- Keep `limit` and page sizes as small as your interface allows.
+- Avoid sending image input when a text query is sufficient.
+- Use `natural_language=true` only for conversational queries that benefit from additional interpretation.
 
-When multiple modes are active (the default), Pureframe AI doesn't run them sequentially. Vector search (Qdrant) and full-text search (Postgres) execute concurrently, and their results are merged afterward with Reciprocal Rank Fusion. Total latency is bounded by the slower of the two, not their sum.
+Collection-scoped searches usually examine less content than account-wide searches. This can improve both latency and result relevance.
 
-## Off-path billing and logging
+## Set client timeouts
 
-Credit deduction and search logging happen as background tasks after the response is prepared — they don't sit in the critical path of a search request. A slow billing write never adds latency to the search results you get back.
+Allow for normal variation instead of depending on a single latency estimate. Log `meta.request_id` and `meta.took_ms` when available so you can investigate slow requests.
 
-## What affects your latency
+Retry transient server errors with exponential backoff and jitter. Do not automatically retry validation or authentication errors.
 
-- **Repeated queries** are fastest — the embedding cache means encoding is nearly free on a cache hit
-- **Collection-scoped searches** (passing `collection_id`) are faster and more precise than searching your entire library, since fewer vectors need to be compared
-- **Library size** affects vector search time — very large libraries (hundreds of thousands of indexed frames) take longer per query than small ones, though this scales sub-linearly due to the vector index structure
-- **Image search** carries the added cost of image encoding, which is somewhat slower than text query encoding
-- **Natural language queries** (`natural_language=true`) add an LLM decomposition round-trip before the underlying search runs — typically 150–300ms
+## Rate limits
 
-## Rate limits, not throughput limits
-
-Search performance and [rate limits](/production/rate-limits) are separate concerns — rate limits exist to prevent abuse of a single API key, not because of a performance ceiling. Staying under your rate limit doesn't mean you're leaving performance on the table.
+Rate limits control request frequency. They are separate from the response time of an individual request. See [Rate limits](/production/rate-limits) for current limits and `429` handling.

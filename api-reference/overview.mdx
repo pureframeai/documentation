@@ -1,9 +1,9 @@
 ---
 title: Overview
-description: The Pureframe AI REST API — base URL, authentication, and response format.
+description: "Pureframe AI REST API: base URL, authentication, and response format."
 ---
 
-The Pureframe AI API is a REST API served over HTTPS. All requests and responses use JSON, except file uploads which use `multipart/form-data`.
+Pureframe AI API is a REST API served over HTTPS. All requests and responses use JSON, except file uploads which use `multipart/form-data`.
 
 ## Base URL
 
@@ -70,5 +70,5 @@ The current API version is `v1`. Breaking changes will be announced before deplo
 Every endpoint below is generated directly from the live OpenAPI spec, grouped by resource.
 
 <Note>
-  The **API Keys** group is the exception — those endpoints require a web session with admin role, not an API key, and exist to power the dashboard's key management UI. They're listed here for completeness, not as an integration path. Always create, list, and revoke keys from [Settings → API Keys](https://platform.pureframe.ai/settings/api-keys) — see [API Keys](/get-started/api-keys) for why.
+  The **API Keys** group is the exception. Those endpoints require a web session with admin role, not an API key, and exist to power the dashboard's key management UI. They're listed here for completeness, not as an integration path. Always create, list, and revoke keys from [Settings → API Keys](https://platform.pureframe.ai/settings/api-keys). See [API keys](/get-started/api-keys) for details.
 </Note>

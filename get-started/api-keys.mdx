@@ -6,12 +6,12 @@ description: API keys authenticate your requests. Create and manage them from th
 API keys authenticate requests to the Pureframe AI API. Each key is scoped to a permission level and can be revoked independently without affecting your other keys.
 
 <Warning>
-  Create, list, and revoke keys from **[Settings → API Keys](https://platform.pureframe.ai/settings/api-keys)** in the dashboard, not through the API. The endpoints below require a signed-in web session and admin role — they cannot be called with an API key, by design, so there's no programmatic key-management flow to integrate against. This page documents what those endpoints do, not a recommended integration path.
+  Create, list, and revoke keys from **[Settings → API Keys](https://platform.pureframe.ai/settings/api-keys)** in the dashboard, not through the API. The endpoints below require a signed-in web session and admin role: they cannot be called with an API key, by design, so there's no programmatic key-management flow to integrate against. This page documents what those endpoints do, not a recommended integration path.
 </Warning>
 
 ## Why key management is dashboard-only
 
-An API key can authenticate search, upload, and collection requests, but it can never create, list, or revoke another key — even its own. Key creation and revocation require a web session token (the one your browser holds after you sign in), specifically so a leaked API key can't be used to mint new keys or revoke the legitimate ones on the account. There's no way around this from server-to-server code; if you need a new key, someone has to generate it from the dashboard.
+An API key can authenticate search, upload, and collection requests, but it can never create, list, or revoke another key, including its own. Key creation and revocation require a web session token (the one your browser holds after you sign in), specifically so a leaked API key can't be used to mint new keys or revoke the legitimate ones on the account. There's no way around this from server-to-server code; if you need a new key, someone has to generate it from the dashboard.
 
 ## What happens when you create a key
 
@@ -36,20 +36,20 @@ curl -X POST https://api.pureframe.ai/v1/api_keys \
 }
 ```
 
-The `key` field — the actual secret used in the `Authorization` header — is only ever returned in this response. Store it immediately; there's no way to retrieve it again. If you lose it, revoke the key and create a new one.
+The `key` field contains the secret used in the `Authorization` header. It is only returned in this response. Store it immediately; there's no way to retrieve it again. If you lose it, revoke the key and create a new one.
 
 ## Permission levels
 
 | Level | Access |
 |-------|--------|
-| `all` | Full read and write — upload, search, manage collections and webhooks |
-| `read_only` | Search and list operations only — no uploads, deletes, or webhook management |
+| `all` | Full read and write: upload, search, manage collections and webhooks |
+| `read_only` | Search and list operations only; excludes uploads, deletes, and webhook management |
 
-Use `read_only` keys for client-side or agent integrations (see [MCP Overview](/agents/mcp-overview)) where you don't need write access.
+Use `read_only` keys for trusted agent or server integrations that do not need write access. Do not expose an API key in browser code or other untrusted clients. See [MCP overview](/agents/mcp-overview).
 
 ## Listing and revoking
 
-Listing returns every key on the account, including revoked ones — the plain secret is never included, only `prefix` (the first 12 characters), so you can tell which key is which. Revocation is immediate and permanent; a revoked key can't be reactivated.
+Listing returns every key on the account, including revoked ones: the plain secret is never included, only `prefix` (the first 12 characters), so you can tell which key is which. Revocation is immediate and permanent; a revoked key can't be reactivated.
 
 ```bash
 curl https://api.pureframe.ai/v1/api_keys -H "Authorization: Bearer <session-token>"
@@ -81,7 +81,9 @@ Creating a key beyond your plan's limit returns `402` with code `API_KEY_LIMIT_R
 | `created_at` | string | ISO 8601 creation timestamp |
 | `revoked_at` | string \| null | ISO 8601 timestamp if revoked, else `null` |
 
-## Security notes
+## Security guidance
 
-- Keys are stored as a SHA-256 hash — Pureframe AI never stores or logs the plain secret after creation.
-- Key creation and revocation both require a web session token with admin role, not another API key — this prevents a compromised API key from minting or revoking other keys on the account.
+- Store keys in environment variables or a secrets manager.
+- Do not place keys in client-side code, prompts, logs, or source control.
+- Use a separate key for each integration so you can revoke access independently.
+- Key creation and revocation require an authenticated dashboard session with the appropriate role.

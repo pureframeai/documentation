@@ -1,0 +1,33 @@
+---
+title: Search signals
+description: Understand how visual and transcript signals affect search results.
+---
+
+Pureframe AI can match what appears on screen and what people say. Understanding these signals helps you choose a search mode and interpret results.
+
+## Visual search
+
+Visual search finds conceptually similar content. A query such as `whiteboard with a diagram` can match relevant frames even when those words are never spoken.
+
+Use visual search when appearance, objects, settings, actions, or composition matter. You can search with text or a reference image.
+
+## Transcript search
+
+Transcript search finds spoken words. It works best when your query contains wording that is likely to appear in the video.
+
+For example, `pricing objection` is more likely to match a segment containing those terms than a segment that expresses the same idea with unrelated words.
+
+## Scene and on-screen text signals
+
+- `scene` results describe the type of scene shown, such as a whiteboard or an outdoor setting.
+- `ocr` results match text visible in the frame, such as slide content, signs, or captions.
+
+Scene availability depends on your plan. On-screen text results can appear alongside other result types. See [Combined queries](/search/combined-queries) for mode behavior.
+
+## Choose a search strategy
+
+- Use `modes=video` when you care about what appears on screen.
+- Use `modes=transcript` when you know what someone said.
+- Use the default combined search when either signal could identify the moment.
+
+Combined search returns one relevance-ranked result set. A segment can appear because it matches visually, through speech, or through both signals.

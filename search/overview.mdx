@@ -1,9 +1,9 @@
 ---
 title: Overview
-description: Find any moment in your video library using text, an image, or both.
+description: Retrieve relevant, timestamped video segments using text, an image, or both.
 ---
 
-`POST /v1/search` finds timestamped moments in your video library. Send a text description, a reference image, or a public image URL — results are ranked by relevance and grouped by video.
+`POST /v1/search` finds timestamped moments in your video library. Send a text description, a reference image, or a public image URL: results are ranked by relevance and grouped by video.
 
 ## Input types
 
@@ -13,7 +13,7 @@ description: Find any moment in your video library using text, an image, or both
 | Image file | `image` file upload | Upload a JPEG or PNG |
 | Image URL | `image_url` form field | `"https://example.com/ref.jpg"` |
 
-At least one input is required. You cannot send both `image` and `image_url` in the same request. A text-only query also requires `collection_id` — image search can run across your whole library, but text search needs a collection to scope against.
+At least one input is required. You cannot send both `image` and `image_url` in the same request. A text-only query also requires `collection_id`: image search can run across your whole library, but text search needs a collection to scope against.
 
 ## What gets searched
 
@@ -21,16 +21,16 @@ Every video is indexed across up to four signal types, and a query can match any
 
 | Type | What it matches | Search page |
 |------|------------------|-------------|
-| `frame` | Visual content — what's on screen | [Image search](/search/image), [Combined queries](/search/combined-queries) |
+| `frame` | Visual content: what's on screen | [Image search](/search/image), [Combined queries](/search/combined-queries) |
 | `transcript` | Spoken words, transcribed | [Transcript search](/search/transcript) |
-| `scene` | Auto-detected scene labels (e.g. outdoor, whiteboard) at shot boundaries | [Combined queries](/search/combined-queries) |
-| `ocr` | Text visible in frame — signage, slides, captions | [Combined queries](/search/combined-queries) |
+| `scene` | Detected scene labels such as outdoor or whiteboard | [Combined queries](/search/combined-queries) |
+| `ocr` | Text visible in frame: signage, slides, captions | [Combined queries](/search/combined-queries) |
 
-Each result segment's `type` field tells you which one matched. See [Search Results](/search/search-results) for the full response shape.
+Each segment's `type` field identifies the matching signal. See [Search results](/search/search-results) for the response shape.
 
 ## Scoping and pagination
 
-Pass `collection_id` to limit results to one collection — faster and more precise than searching your whole library. Results are paginated with `page` and `per_page` (max 50).
+Pass `collection_id` to limit results to one collection and reduce unrelated matches. Results are paginated with `page` and `per_page`, with a maximum page size of 50.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -42,7 +42,7 @@ curl -X POST https://api.pureframe.ai/v1/search \
 
 ## Credits and limits
 
-Each search request consumes 1 credit on Pay as you go accounts (see [Usage and Billing](/production/usage-and-billing)). Free accounts get a daily quota of 30 searches. Requests are rate-limited to 30/minute per API key — see [Rate Limits](/production/rate-limits).
+Search charges depend on the query type. Free accounts have a daily search quota. See [Usage and billing](/production/usage-and-billing) for current pricing and [Rate limits](/production/rate-limits) for request limits.
 
 <CardGroup cols={2}>
   <Card title="Text Search" icon="font" href="/search/text">

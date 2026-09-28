@@ -1,26 +1,30 @@
 ---
-title: Source-backed Results
-description: Every answer an agent gives can be traced back to an exact clip.
+title: Source Backed Results
+description: Use video IDs, timestamps, images, and transcript text to support agent answers.
 ---
 
-When an agent answers a question using Pureframe AI, the answer isn't a summary generated from a general impression of your library — it's grounded in specific, retrievable evidence.
+Pureframe AI returns evidence that an agent can use to support an answer. Your integration should preserve that evidence and make it available for verification.
 
 ## What "source-backed" means here
 
-Every `search_videos` result carries the pieces needed to verify the claim, not just cite it:
+Each `search_videos` result can include:
 
-- `video_id`, `start_secs` / `end_secs` — exactly where the moment is
-- `clip_url` — a playable link to that exact segment
-- `thumbnail_base64` — the actual frame the model saw, so you (or another model) can check the claim independently
-- `text_snippet` — the transcribed words, if the match came from speech
-- `relevance_score` — how confident the match is, so low-confidence results can be treated with appropriate skepticism
+- `video_id`, `start_secs`, and `end_secs` to identify the source and location
+- `clip_url` to open the relevant part of the video
+- `thumbnail_base64` to provide the matched frame to a vision-capable model
+- `text_snippet` for matching spoken content
+- `relevance_score` to order results from the same search
 
-If an agent tells you "the presenter mentions a 20% discount at 4:32 in the Q3 demo," that's not an inference from a cached summary — it's read directly from a transcript segment at `timestamp_start: 272.0`, and the URL to verify it is right there in the same tool response.
+A relevance score is not proof that a statement is correct. The agent should base its claim on the returned frame or transcript text and cite the source timestamp.
 
 ## Why this matters for agent reliability
 
-Video is opaque to most models by default — they can't watch a long video before answering. Pureframe AI's search step is what gives the model something concrete to point to, rather than having it guess or hallucinate content it never actually saw. If a model tries to answer without calling a tool first, it has no `video_id` or timestamp to offer — a useful tell that the answer isn't grounded.
+Search narrows a video library to relevant segments that a model can inspect. This reduces the amount of context the model must process, but it does not guarantee a correct answer.
+
+Require the agent to call `search_videos` before making claims about the library. For important claims, require a `video_id`, timestamp, and short explanation of the supporting evidence.
 
 ## Building this into your own UI
 
-If you're building a product on top of Pureframe AI rather than using a chat agent directly, carry the same fields through to your UI: show the timestamp and a link to the clip next to any AI-generated summary of video content, not just the summary text alone. See [Search Results](/search/search-results) for the full response shape these fields come from.
+Keep the source fields with any generated summary. Show the video name, timestamp, and playback link next to the answer. Let users inspect the source instead of presenting generated text on its own.
+
+See [Search results](/search/search-results) for the REST response fields.

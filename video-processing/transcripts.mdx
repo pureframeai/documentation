@@ -1,24 +1,26 @@
 ---
 title: Transcripts
-description: How Pureframe AI transcribes audio, and how to retrieve what was said.
+description: Understand transcript availability, search behavior, and limitations.
 ---
 
-Every video's full audio track is transcribed by **Whisper (medium)** during processing, producing timestamped speech segments stored in Postgres. This happens automatically on every upload — there's no separate transcription step to trigger.
+Pureframe AI transcribes spoken audio during video processing. You do not need to start a separate transcription job.
 
 ## Retrieving transcript content
 
-There's no standalone "get the full transcript" endpoint. Transcript text comes back as the `text_content` field on `transcript`-type segments in [search results](/search/search-results) — you get the parts that matched your query, not a sequential export of everything said. If you need the complete transcript of a video regardless of search relevance, run a broad transcript-only query (`modes=transcript`) and page through the results.
+The API does not provide a standalone full-transcript endpoint. Matching transcript text appears in `text_content` on `transcript` segments in [search results](/search/search-results).
+
+A search response contains matching passages rather than a sequential export of everything said. Do not use broad search pagination as a substitute for a guaranteed full transcript.
 
 ## Language
 
-Transcription itself (Whisper) supports around 99 languages. Full-text search over the transcript, however, is currently configured for English (`websearch_to_tsquery` with an English text-search config) — non-English transcripts are stored correctly, but text search over them may return incomplete or no matches. If your content is primarily non-English, rely more on visual search (language-independent) until broader language support ships.
+Transcript search is optimized for English. Results for other languages may be incomplete. If your content is primarily non-English, test representative recordings before relying on transcript search in production.
 
 ## What's not included
 
-- No speaker diarization — segments aren't attributed to individual speakers
-- No profanity filtering or redaction — transcripts are stored as Whisper produces them
-- No manual transcript editing via the API — if a transcription is wrong, there's currently no correction mechanism
+- Speaker identification is not available. Transcript segments are not attributed to individual speakers.
+- Profanity filtering and automatic redaction are not available.
+- You cannot edit transcript text through the API.
 
 ## Relationship to search
 
-See [Transcript Search](/search/transcript) for how to query transcript content, and [Combined Queries](/search/combined-queries) for how transcript matches merge with visual and scene matches.
+See [Transcript search](/search/transcript) to query spoken content and [Combined queries](/search/combined-queries) to combine transcript and visual signals.

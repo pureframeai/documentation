@@ -1,9 +1,9 @@
 ---
 title: MCP Server
-description: The @pureframeai/mcp package — install, run, and deploy options.
+description: "The @pureframeai/mcp package: install, run, and deploy options."
 ---
 
-`@pureframeai/mcp` is the package that turns your Pureframe AI library into an MCP server. For per-client setup instructions (Claude, Cursor, VS Code, Codex, OpenCode), see [Connect an Agent](/agents/connect-an-agent) — this page covers the package itself.
+`@pureframeai/mcp` is the package that turns your Pureframe AI library into an MCP server. For per-client setup instructions (Claude, Cursor, VS Code, Codex, OpenCode), see [Connect an Agent](/agents/connect-an-agent): this page covers the package itself.
 
 ## Running it locally
 
@@ -13,16 +13,16 @@ Most clients invoke this for you via `npx`, so there's usually nothing to instal
 npx -y @pureframeai/mcp
 ```
 
-It reads `PUREFRAME_API_KEY` from the environment and speaks MCP over stdio — this is what every client config in [Connect an Agent](/agents/connect-an-agent) points at.
+It reads `PUREFRAME_API_KEY` from the environment and speaks MCP over stdio: this is what every client config in [Connect an Agent](/agents/connect-an-agent) points at.
 
 ## Remote endpoint
 
-Pureframe AI also hosts the same server as a Cloudflare Worker at `https://mcp.pureframe.ai`, speaking MCP over HTTP. Use this instead of the local `npx` process for clients that support remote MCP endpoints (Claude.ai web, for example) — no Node.js runtime required on your end. The trade-off: the remote endpoint can't read your local filesystem, so `upload_video` isn't available through it.
+Pureframe AI also provides a hosted MCP endpoint at `https://mcp.pureframe.ai`. Use it with clients that support remote MCP when you do not want to run Node.js locally. The remote endpoint cannot read your local filesystem, so `upload_video` is available only through the local server.
 
 ## Tools exposed
 
-`search_videos`, `list_collections`, `get_collection`, `get_video`, `upload_video` (local only), `get_job_status` — see [MCP Overview](/agents/mcp-overview) for what each does.
+The server provides `search_videos`, `list_collections`, `get_collection`, `get_video`, `upload_video` (local only), and `get_job_status`. See [MCP overview](/agents/mcp-overview) for details about each tool.
 
 ## Source
 
-The package wraps the same REST API as the [Python](/sdks/python-sdk) and [JavaScript](/sdks/javascript-sdk) SDKs — if you need a capability the MCP tools don't expose, call the REST API or an SDK directly alongside it.
+The package wraps the same REST API as the [Python](/sdks/python-sdk) and [JavaScript](/sdks/javascript-sdk) SDKs. If you need a capability the MCP tools don't expose, call the REST API or an SDK directly alongside it.

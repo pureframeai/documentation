@@ -1,11 +1,11 @@
 ---
 title: Combined Queries
-description: How Pureframe AI merges visual, transcript, scene, and text signals into one ranked result set.
+description: Search visual, transcript, and scene signals in one request.
 ---
 
-By default, a search runs against every available signal at once and merges the results — you don't have to decide up front whether the moment you want is visual or spoken.
+By default, Pureframe AI searches all available signals and returns one relevance-ranked result set. Use `modes` when your application needs a narrower search.
 
-## The `modes` parameter
+## Set search modes
 
 ```
 modes=["video", "transcript", "scene"]
@@ -15,9 +15,9 @@ This is the default. Pass a subset to restrict which signals are searched:
 
 | Mode | Matches segment type |
 |------|----------------------|
-| `video` | `frame` — visual frame embeddings |
-| `transcript` | `transcript` — transcribed speech |
-| `scene` | `scene` — auto-detected scene labels at shot boundaries |
+| `video` | `frame`: visual content |
+| `transcript` | `transcript`: transcribed speech |
+| `scene` | `scene`: detected scene labels |
 
 ```bash
 # Visual and transcript only, skip scene labels
@@ -28,18 +28,19 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "modes=transcript" \
   -F "collection_id=col_abc123"
 
-  +-
 ```
 
-Text visible in frame — signage, slide text, captions — is indexed separately as `ocr` segments and can also surface in results regardless of `modes`.
+Text visible in a frame, including signs, slides, and captions, can appear as an `ocr` result. OCR results are not controlled by `modes`.
 
 ## How results merge
 
-Visual and transcript search run concurrently, not sequentially, so combining modes doesn't cost you latency — total time is bounded by the slower of the two, not their sum (see [Performance](/production/performance)). Their ranked lists are merged with Reciprocal Rank Fusion (k=60): a segment can rank highly because it matched visually, because of what was said, or both.
+Pureframe AI combines matches from the selected modes and ranks them by relevance. A segment can rank well because it matches visual content, spoken content, or more than one signal.
+
+Do not compare scores from different requests as absolute confidence values. Use the score to order results within a response and validate important matches with the returned timestamp, thumbnail, and text.
 
 ## Filtering by scene label
 
-Every video is automatically segmented at shot boundaries, and each shot gets zero or more auto-detected labels (e.g. `outdoor`, `whiteboard`, `person`). Pass `labels` to restrict results to segments carrying specific labels:
+Pass `labels` to restrict results to matching scene labels such as `outdoor`, `whiteboard`, or `person`:
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -49,8 +50,8 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "collection_id=col_abc123"
 ```
 
-The response's `meta.facets.scene_labels` field returns the count of every label present across the matched videos, so you can build filter UI without a separate request.
+Use `meta.facets.scene_labels` to build a filter interface from the labels represented in the result set.
 
 ## Precedence when combining image and text
 
-If you send both an `image` and a text `query` together, the request is no longer a pure "combined query" across modes — it's image-first with text re-scoring. See [Image Search](/search/image) for that blend.
+When you send both an image and `query`, the image provides the primary visual reference and the text narrows the intent. See [Image search](/search/image).

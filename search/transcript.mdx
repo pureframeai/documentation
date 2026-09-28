@@ -3,7 +3,7 @@ title: Transcript Search
 description: Search only what was said, ignoring visual content.
 ---
 
-Restrict a query to spoken words with `modes=transcript`. This searches transcribed speech only — visual content, scene labels, and on-screen text are excluded from matching.
+Restrict a query to spoken words with `modes=transcript`. This searches transcribed speech only: visual content, scene labels, and on-screen text are excluded from matching.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -13,14 +13,16 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "collection_id=col_abc123"
 ```
 
-## How it works
+## How matching works
 
-Every video's audio is transcribed by Whisper into timestamped speech segments. Transcript search runs Postgres full-text search (`websearch_to_tsquery`) against that text — a lexical match, not a vector embedding. This means it rewards queries that share actual words with what was said: `"pricing objection"` matches a segment containing those words, but won't match a segment that expresses the same idea in different words the way visual/conceptual search can. See [Embeddings](/video-processing/embeddings) for why the two techniques are different under the hood.
+Transcript search works best when your query uses words that are likely to appear in the speech. For example, `pricing objection` is more likely to match a segment containing those terms than one that expresses the same idea with different wording.
+
+Use [Search signals](/video-processing/search-signals) to compare transcript and visual matching.
 
 ## When to restrict to transcript-only
 
-- You know the moment involved someone saying something specific, and want to avoid visual false-positives
-- You're building a "search what was said" experience (meeting notes, lecture search, call review) where visual matches aren't relevant
-- You want faster, more precise results on content where speech is the primary signal — talking-head interviews, voiceovers, panel discussions
+- You know that someone said a specific phrase.
+- You are building a search experience for meetings, lectures, interviews, or calls.
+- Visual matches would be irrelevant or distracting.
 
-For everything else, the default combined mode (see [Combined Queries](/search/combined-queries)) is usually the better choice — it catches moments whether they're identifiable by what's shown, what's said, or both.
+Use the default [combined search](/search/combined-queries) when either visual or spoken content could identify the segment.

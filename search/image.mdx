@@ -3,7 +3,7 @@ title: Image Search
 description: Find visually similar moments using a reference image instead of words.
 ---
 
-Provide a reference image and Pureframe AI finds frames that look like it — useful when you have an example of what you're looking for but no good words to describe it.
+Provide a reference image to find visually similar moments. Use image search when an example communicates the desired appearance better than a text description.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -19,17 +19,17 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "image_url=https://example.com/reference.jpg"
 ```
 
-Send either `image` or `image_url`, never both. Unlike text search, `collection_id` is optional — omitting it searches your entire library.
+Send either `image` or `image_url`, never both. Unlike text search, `collection_id` is optional: omitting it searches your entire library.
 
 ## Constraints
 
 - Max file size: 10 MB
-- Minimum dimensions: 64×64 pixels — smaller images are rejected as too low-quality to match reliably
-- `image_url` is fetched server-side with SSRF protection; URLs resolving to private, loopback, or link-local addresses are rejected
+- Minimum dimensions: 64×64 pixels. Smaller images are rejected because they may not match reliably
+- `image_url` must resolve to a publicly accessible image. Private, loopback, and link-local addresses are rejected.
 
 ## What it matches
 
-Image search operates on visual content only (`type: "frame"` segments) — a static image has no transcript to compare against. If you combine `image` with a text `query` in the same request, the image is treated as primary and the text is used to re-rank: results are 60% image similarity, 40% text similarity.
+Image search returns visual matches as `frame` segments. Add `query` when you want text to narrow the intent of the reference image.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -41,4 +41,4 @@ curl -X POST https://api.pureframe.ai/v1/search \
 
 ## Combining with text-derived filters
 
-You can still pass `labels` alongside an image query to restrict matches to frames with specific auto-detected scene labels — see [Combined Queries](/search/combined-queries).
+Pass `labels` with an image query to restrict matches to specific scene labels. See [Combined queries](/search/combined-queries).

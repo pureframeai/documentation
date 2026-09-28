@@ -139,7 +139,7 @@ Try it: *"Search my footage for a whiteboard diagram."*
 
 ## Remote MCP (no install)
 
-For clients that support remote MCP endpoints, including Claude.ai web, skip the local `npx` process entirely and point at Pureframe AI's hosted Worker:
+For clients that support remote MCP endpoints, including Claude.ai, connect directly to the hosted endpoint:
 
 ```json
 {
@@ -152,7 +152,7 @@ For clients that support remote MCP endpoints, including Claude.ai web, skip the
 }
 ```
 
-The remote endpoint can't read your local filesystem, so `upload_video` isn't available there — only on the local `npx` server.
+The remote endpoint can't read your local filesystem, so `upload_video` is available only on the local `npx` server.
 
 ## Scoping to a collection
 
@@ -171,14 +171,14 @@ Pass `collection_id` to `search_videos` to limit results to one library. Call `l
 
 ## Rate limits
 
-Agent tool calls share the same limits as the REST API — 30 requests/minute for `search_videos`. See [Rate Limits](/production/rate-limits).
+Agent tool calls share the same limits as the REST API: 30 requests/minute for `search_videos`. See [Rate Limits](/production/rate-limits).
 
 ## Troubleshooting
 
-**Client doesn't detect the server** — restart the client after editing its config file. For Claude Code, confirm with `claude mcp list`.
+**Client doesn't detect the server**: restart the client after editing its config file. For Claude Code, confirm with `claude mcp list`.
 
-**"Invalid API key" errors** — check that `PUREFRAME_API_KEY` (or the `Authorization` header for remote MCP) is set correctly and hasn't been revoked in [API Keys](/get-started/api-keys).
+**"Invalid API key" errors**: check that `PUREFRAME_API_KEY` (or the `Authorization` header for remote MCP) is set correctly and hasn't been revoked in [API Keys](/get-started/api-keys).
 
-**No results returned** — the query may not match any indexed content, or `collection_id` may be scoping the search too narrowly. Try `list_collections` first, or omit `collection_id` to search the whole library.
+**No results returned**: confirm the target video is searchable and `collection_id` identifies the intended collection. Try a more concrete query or a different search mode. Image searches can omit `collection_id`; text-only searches require it.
 
-**`npx` command not found** — the local server requires Node.js. Install it, or use the remote MCP endpoint instead, which requires no local runtime.
+**`npx` command not found**: the local server requires Node.js. Install it, or use the remote MCP endpoint instead, which requires no local runtime.

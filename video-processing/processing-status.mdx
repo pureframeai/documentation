@@ -1,5 +1,5 @@
 ---
-title: Processing Status
+title: Processing status
 description: Poll a job's status while a video is being indexed.
 ---
 
@@ -24,11 +24,11 @@ curl https://api.pureframe.ai/v1/jobs/job_xyz789 \
 
 | Status | Meaning |
 |--------|---------|
-| `queued` | Waiting for a processing worker |
-| `pending` | Worker assigned, about to start |
-| `processing` | Actively being indexed — `progress_pct` updates live |
+| `queued` | Waiting for processing to begin |
+| `pending` | Preparing to process the video |
+| `processing` | Actively being indexed: `progress_pct` updates live |
 | `done` | Fully indexed and searchable |
-| `failed` | Processing failed — retry the upload |
+| `failed` | Processing failed: retry the upload |
 
 A video is only searchable once its job reaches `done`. Searching before that returns no results for that video.
 
@@ -56,8 +56,8 @@ def wait_for_job(job_id: str, api_key: str) -> dict:
 
 ## Getting notified instead of polling
 
-If you don't want to poll at all, subscribe to `job.completed` and `job.failed` webhook events instead — see [Webhooks](/production/webhooks).
+If you don't want to poll, subscribe to `job.completed` and `job.failed` webhook events. See [Webhooks](/production/webhooks).
 
 ## If a job fails
 
-The job status becomes `failed` and the video's own status mirrors it. There's no automatic retry — re-upload the video to create a new job. If failures persist across multiple uploads of the same file, the file itself is likely the problem (corrupt container, unsupported codec inside an otherwise-accepted format).
+When a job reaches `failed`, re-upload the video to create a new job. If the same file fails again, verify its container and codec, then contact support with the `job_id` and `video_id`.

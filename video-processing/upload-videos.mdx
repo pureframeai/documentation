@@ -1,9 +1,9 @@
 ---
-title: Upload Videos
+title: Upload videos
 description: How to upload a video and track its processing status.
 ---
 
-Pureframe AI processes videos asynchronously. You upload a file, get a `job_id` back immediately, and poll for status while the pipeline runs in the background.
+Pureframe AI processes videos asynchronously. An upload returns a `job_id` that you can poll while the video is prepared for search.
 
 ## Accepted formats
 
@@ -20,7 +20,7 @@ Maximum file size is **5 GB** per upload.
 
 ## Uploading a video
 
-`collection_id` is required — a video must belong to a collection. See [Collections](/video-processing/collections) to create one first.
+`collection_id` is required: a video must belong to a collection. See [Collections](/video-processing/collections) to create one first.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/upload \
@@ -43,4 +43,4 @@ Save both `job_id` (for tracking progress) and `video_id` (for searching and man
 
 ## Next steps
 
-See [Processing Lifecycle](/video-processing/processing-lifecycle) for what happens inside the pipeline while your job is `processing`.
+See [Processing lifecycle](/video-processing/processing-lifecycle) for status tracking and failure guidance.

@@ -3,7 +3,7 @@ title: Search a Collection
 description: Scope a search to one collection instead of your whole library.
 ---
 
-Pass `collection_id` to restrict a search to one collection's videos. This is faster than searching your entire account, since fewer vectors need to be compared, and it's more precise when your library holds unrelated content — a "Sales calls" collection and a "Product demos" collection shouldn't surface each other's moments.
+Pass `collection_id` to restrict a search to one collection. This reduces unrelated matches when your account contains different kinds of footage, such as sales calls and product demonstrations.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -12,7 +12,7 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "collection_id=col_abc123"
 ```
 
-Text queries require `collection_id` — there's no whole-library text search. Image queries can omit it to search across every collection in your account.
+Text queries require `collection_id`: there's no whole-library text search. Image queries can omit it to search across every collection in your account.
 
 ## Discovering collection IDs
 
@@ -25,4 +25,4 @@ If you're building an agent integration, `list_collections` (see [MCP Overview](
 
 ## Searching across everything
 
-Omit `collection_id` entirely on an image search to check your whole account at once — useful for something like scanning every collection for a specific logo or product appearance. See [Collections](/video-processing/collections) for how videos get organized into collections in the first place.
+Omit `collection_id` entirely on an image search to check your whole account at once: useful for something like scanning every collection for a specific logo or product appearance. See [Collections](/video-processing/collections) for how videos get organized into collections in the first place.

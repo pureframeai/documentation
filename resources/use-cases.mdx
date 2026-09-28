@@ -5,9 +5,9 @@ description: Common ways teams use Pureframe AI to build video-aware application
 
 ## Internal footage retrieval
 
-**Problem:** Teams sit on hours of raw recordings — sales calls, user interviews, training sessions — and finding a specific moment means scrubbing through video manually.
+**Problem:** Teams sit on hours of raw recordings, including sales calls, user interviews, and training sessions. Finding a specific moment means scrubbing through video manually.
 
-**How Pureframe AI helps:** Upload recordings to a collection and search with natural language. `"customer mentions pricing"` returns the exact timestamp across hundreds of hours of footage in under a second.
+**How Pureframe AI helps:** Upload recordings to a collection and search with natural language. A query such as `customer mentions pricing` returns relevant timestamped segments without requiring users to scrub each recording.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -20,9 +20,9 @@ curl -X POST https://api.pureframe.ai/v1/search \
 
 ## AI agent with video context
 
-**Problem:** AI assistants can't see video. When users ask questions about recorded content, the agent has no way to look it up.
+**Problem:** An AI assistant needs a retrieval tool before it can answer questions about a private video library.
 
-**How Pureframe AI helps:** Connect the Pureframe AI MCP server to Claude, GPT-4o, or any LLM with function calling. The agent can search footage, retrieve frame images, and reason about visual content in a single conversation turn — with every claim traceable back to a timestamp, see [Source-backed Results](/agents/source-backed-results).
+**How Pureframe AI helps:** Connect the Pureframe AI MCP server or function-calling API to a compatible model. The agent can search footage and retrieve frame images and transcript passages. Design the agent to cite the supporting timestamp. See [Source-backed results](/agents/source-backed-results).
 
 **Example agent prompt:** `"Find the part of last week's demo where we showed the pricing page, and tell me what the presenter said about the annual plan."`
 
@@ -48,7 +48,7 @@ curl -X POST https://api.pureframe.ai/v1/search \
 
 **Problem:** You need labeled video clips for a fine-tuning or evaluation dataset, but manually reviewing hours of footage isn't practical.
 
-**How Pureframe AI helps:** Describe the moments you need — `"person looking directly at the camera"`, `"close-up of hands on keyboard"`, `"outdoor scene with natural light"` — and extract matched clips with timestamps. Use `thumbnail_base64` to pass frames directly to a vision model for automated labeling.
+**How Pureframe AI helps:** Describe the moments you need, such as `"person looking directly at the camera"`, `"close-up of hands on keyboard"`, or `"outdoor scene with natural light"`. Then extract matched clips with timestamps. Use `thumbnail_base64` to pass frames directly to a vision model for automated labeling.
 
 ---
 
@@ -56,4 +56,4 @@ curl -X POST https://api.pureframe.ai/v1/search \
 
 **Problem:** You record meetings or lectures and want attendees to find specific topics discussed without watching the whole recording.
 
-**How Pureframe AI helps:** Upload recordings to a per-meeting or per-course collection. Expose a search box powered by `POST /v1/search` with `modes=transcript` — users search what was *said* and jump directly to the moment in the recording.
+**How Pureframe AI helps:** Upload recordings to a per-meeting or per-course collection. Expose a search box powered by `POST /v1/search` with `modes=transcript`: users search what was *said* and jump directly to the moment in the recording.

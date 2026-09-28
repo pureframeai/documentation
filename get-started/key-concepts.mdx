@@ -7,23 +7,23 @@ Five ideas cover almost everything you need to reason about the API. Each links 
 
 ## Collections
 
-A collection is a named group of videos. Every video belongs to exactly one. Scoping a search to a `collection_id` is both faster and more precise than searching your whole library, because fewer vectors need to be compared. See [Collections](/video-processing/collections).
+A collection is a named group of videos. Every video belongs to one collection. Pass `collection_id` to search within a known collection and reduce unrelated matches. See [Collections](/video-processing/collections).
 
 ## Jobs and the processing lifecycle
 
-Uploading a video doesn't index it immediately — it queues a job. The job moves through `queued → processing → done` (or `failed`) while Pureframe AI extracts frames, transcribes audio, and writes vectors. A video is only searchable once its job reaches `done`. See [Processing Lifecycle](/video-processing/processing-lifecycle).
+Uploading a video creates a processing job. The job moves through `queued → processing → done` or reaches `failed`. A video becomes searchable when the job reaches `done`. See [Processing lifecycle](/video-processing/processing-lifecycle).
 
-## Two search modalities
+## Search signals
 
-Pureframe AI indexes videos two ways: **visual** (what's on screen, via frame embeddings) and **transcript** (what's said, via speech-to-text). A query can match either, both, or be restricted to one with the `modes` parameter. They use fundamentally different techniques under the hood — one is vector similarity, the other is full-text search — which is why combining them catches more than either alone. See [Search Overview](/search/overview).
+Pureframe AI can match visual content, spoken words, scene context, and text visible on screen. Use `modes` to restrict a request when you know which signals matter. See [Search overview](/search/overview).
 
 ## Segments, not videos
 
-Search doesn't return whole videos — it returns segments: a `timestamp_start`, a `timestamp_end`, a relevance `score`, and (if the match was visual) a frame thumbnail, or (if transcript) the transcribed text. A single video can appear in results with multiple segments if several moments match. See [Search Results](/search/search-results).
+Search returns timestamped segments grouped by video. Each segment includes `timestamp_start`, `timestamp_end`, and a relevance `score`. It can also include a thumbnail or matching text. One video can contain several matching segments. See [Search results](/search/search-results).
 
 ## Credits
 
-Pay as you go accounts are billed per action, deducted from a prepaid credit balance — indexing costs per minute of video, search costs a small flat fee per request. There's no monthly subscription; you top up credits and they draw down as you use the API. Free accounts get a daily search quota and a one-time trial credit instead. See [Usage and Billing](/production/usage-and-billing).
+Pay as you go accounts are billed per action, deducted from a prepaid credit balance: indexing costs per minute of video, search costs a small flat fee per request. There's no monthly subscription; you top up credits and they draw down as you use the API. Free accounts get a daily search quota and a one-time trial credit instead. See [Usage and Billing](/production/usage-and-billing).
 
 ---
 

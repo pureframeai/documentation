@@ -1,11 +1,11 @@
 ---
-title: Frame Map
-description: A visual 2D map of your entire video library, organized by visual similarity.
+title: Frame Map (Beta)
+description: Explore indexed video frames on a two-dimensional similarity map.
 ---
 
 **Beta**
 
-Frame Map projects every indexed frame in your library onto a 2D canvas, positioned by visual similarity — frames that look alike land close together. It's a way to browse a library visually instead of only through query search.
+Frame Map places indexed video frames on a two-dimensional canvas. Visually similar frames appear near one another, so you can browse themes and outliers without starting with a search query.
 
 ## In the app
 
@@ -18,7 +18,7 @@ Frame Map is available at [platform.pureframe.ai/framemap](https://platform.pure
 - **Click a cluster** in the sidebar to pin every frame in that cluster at once
 - **Filter by collection** using the left panel
 
-Frames are grouped into clusters automatically (HDBSCAN), each representing a visual theme — all your outdoor shots, all your whiteboard moments. Frames that don't fit any cluster show as uncategorized. Cluster quality improves with library size; at least 50 indexed videos is recommended for meaningful groupings.
+Related frames appear in labeled clusters such as outdoor scenes or whiteboard footage. Frames that do not belong to a clear group appear as uncategorized. Larger and more varied libraries tend to produce more useful groupings.
 
 ## API access
 
@@ -34,16 +34,15 @@ curl "https://api.pureframe.ai/v1/framemap?collection_id=col_abc123" \
       { "id": "frm_1", "x": 12.4, "y": -8.1, "video_id": "vid_abc", "collection_id": "col_abc123", "timestamp_start": 42.5, "thumbnail_url": "https://...", "cluster_id": 3 }
     ],
     "clusters": [
-      { "id": 3, "label": "Whiteboard", "color": "#4f46e5", "frame_count": 128, "video_count": 6, "confidence": 0.82, "density": 4.1, "rank": 1 }
+      { "id": 3, "label": "Whiteboard", "color": "#4f46e5", "frame_count": 128, "video_count": 6 }
     ],
     "total_frames": 4211,
     "total_videos": 18,
-    "total_collections": 1,
-    "computed_at": "2026-07-20T02:00:00Z"
+    "total_collections": 1
   }
 }
 ```
 
-Omit `collection_id` to compute the map across your whole account. The result is cached per scope (per collection, or globally) — repeat calls return the cached map instantly. Pass `force=true` to recompute after uploading new videos, which re-scans every frame vector and re-clusters from scratch, so it's slower and costs more than a cached read.
+Omit `collection_id` to request a map for the account. Set `force=true` to request a refreshed map after adding or removing substantial content.
 
 The Python SDK exposes this as `client.frame_map.get_framemap(...)`.

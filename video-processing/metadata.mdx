@@ -50,7 +50,7 @@ Returned by `GET /v1/collections` and `GET /v1/collections/{collection_id}`.
 | Field | Type | Description |
 |-------|------|--------------|
 | `id` | string | Unique collection ID |
-| `name` | string | Display name — unique per account |
+| `name` | string | Display name: unique per account |
 | `video_count` | integer | Number of videos in this collection |
 | `total_duration_secs` | number | Total video duration across all videos. Present only on single-collection GET |
 | `storage_bytes` | integer | Total storage used by this collection. Present only on single-collection GET |
@@ -68,4 +68,4 @@ Returned by `GET /v1/jobs/{job_id}`.
 
 ## Presigned URLs
 
-`video_url`, `thumbnail_url`, and `playback_url` are presigned — they expire after approximately 1 hour. Re-fetch the relevant resource to get a fresh URL if yours has expired. Do not store these URLs long-term; store the `video_id` instead.
+`video_url`, `thumbnail_url`, and `playback_url` are presigned: they expire after approximately 1 hour. Re-fetch the relevant resource to get a fresh URL if yours has expired. Do not store these URLs long-term; store the `video_id` instead.

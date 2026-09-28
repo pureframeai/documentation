@@ -3,7 +3,7 @@
   "info": {
     "title": "Pureframe API",
     "version": "v1",
-    "description": "The Pureframe API lets you upload videos, index them for semantic search, and retrieve timestamped clips matching text queries or reference images. All endpoints require a Bearer API key (`Authorization: Bearer pf_...`).",
+    "description": "Upload, process, and search videos with the Pureframe AI API.",
     "contact": {
       "url": "https://pureframe.ai",
       "email": "hello@pureframe.ai"
@@ -19,7 +19,7 @@
           "Collections"
         ],
         "summary": "List Collections",
-        "description": "List all collections in the authenticated org, ordered by creation date.",
+        "description": "List the collections in your account.",
         "operationId": "list_collections_v1_collections_get",
         "responses": {
           "200": {
@@ -44,7 +44,7 @@
           "Collections"
         ],
         "summary": "Create Collection",
-        "description": "Create a new collection. Collection names must be unique per org.",
+        "description": "Create a collection in your account.",
         "operationId": "create_collection_v1_collections_post",
         "requestBody": {
           "content": {
@@ -234,7 +234,7 @@
           "Upload"
         ],
         "summary": "Upload Video",
-        "description": "Upload a video file to a collection for indexing.\n\nAccepted formats: MP4, MOV, AVI, WebM, MPEG, MKV. Processing is asynchronous \u2014 use the\nreturned `job_id` to poll `GET /v1/jobs/{job_id}` for progress. Once the job status\nis `done`, the video is fully searchable.",
+        "description": "Upload a video to a collection and start asynchronous processing.",
         "operationId": "upload_video_v1_upload_post",
         "requestBody": {
           "content": {
@@ -329,7 +329,7 @@
           "Videos"
         ],
         "summary": "List Videos",
-        "description": "List all videos in the authenticated org. Filter by collection or processing status (comma-separated).",
+        "description": "List the videos in your account.",
         "operationId": "list_videos_v1_videos_get",
         "security": [
           {
@@ -504,7 +504,7 @@
           "Videos"
         ],
         "summary": "Get Video Moment",
-        "description": "Scene caption/labels covering `timestamp`, if this video has caption\nenrichment (Pay as you go/Enterprise). This is best-effort context for the player \u2014\nnot every moment has a scene captioned, so an empty result is normal and\nnever a 404.",
+        "description": "Get scene context for a video at a specific timestamp when available on your plan.",
         "operationId": "get_video_moment_v1_videos__video_id__moment_get",
         "security": [
           {
@@ -562,7 +562,7 @@
           "Search"
         ],
         "summary": "Search",
-        "description": "Search for video segments matching a text query, image file, or image URL.\n\nAt least one of `query`, `image`, or `image_url` is required. Supports two search modes:\n- **image_first** (default): prioritises visual similarity, blends in text signals when present.\n- **fusion**: combines visual and text rankings using Reciprocal Rank Fusion.\n\nResults are grouped by video and include timestamped segment clips with presigned URLs\n(valid ~1 hour) and transcription snippets where available.",
+        "description": "Find timestamped video segments that match text, an image, or both.",
         "operationId": "search_v1_search_post",
         "requestBody": {
           "content": {
@@ -608,7 +608,7 @@
           "Search"
         ],
         "summary": "Log Search Click",
-        "description": "Implicit relevance signal: which result a user actually opened, at\nwhat rank and lane. Rides the existing PostHog pipe (search_result_clicked,\nunchanged) for CTR analytics, AND now also writes to search_click_logs \u2014\nthe first time click events land in Postgres \u2014 so the adaptive threshold\ntuning job (core/threshold_tuning.py) has a queryable source with no\nexternal API dependency. The Postgres write is fail-open: it enriches the\nclick signal but must never turn a click into a failed request.",
+        "description": "Record which search result a user opened so Pureframe AI can improve result relevance.",
         "operationId": "log_search_click_v1_search_click_post",
         "requestBody": {
           "content": {
@@ -748,7 +748,7 @@
           "Search"
         ],
         "summary": "Suggest Search",
-        "description": "Search-as-you-type suggestions from indexed dialogue/on-screen text and\npast queries. Fails open (empty list) on any error \u2014 suggestions must\nnever block or error out the search box. Not billable: unlike /v1/search,\nthis does no embedding or Qdrant work.",
+        "description": "Get search suggestions from available video text and recent queries.",
         "operationId": "suggest_search_v1_search_suggest_post",
         "requestBody": {
           "content": {
@@ -815,7 +815,7 @@
           "Agent"
         ],
         "summary": "Agent Call",
-        "description": "Invoke a Pureframe tool by name. Designed for AI agents and LLM tool-calling integrations.\n\nAvailable tools: `search_videos`, `list_collections`, `get_collection`, `get_video`.\nFetch the tool schema from `GET /v1/agent/schema.json`.\n\n`search_videos` results include `thumbnail_base64` \u2014 a base64-encoded JPEG that\nvision-capable models (GPT-4o, Claude) can consume directly.",
+        "description": "Invoke a Pureframe AI agent tool by name.",
         "operationId": "agent_call_v1_agent_call_post",
         "requestBody": {
           "content": {
@@ -857,9 +857,9 @@
     "/v1/framemap": {
       "get": {
         "tags": [
-          "FrameMap"
+          "Frame Map (Beta)"
         ],
-        "summary": "Get Framemap",
+        "summary": "Get Frame Map",
         "operationId": "get_framemap_v1_framemap_get",
         "security": [
           {

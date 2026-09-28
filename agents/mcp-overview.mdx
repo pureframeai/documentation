@@ -3,18 +3,18 @@ title: MCP Overview
 description: Connect Pureframe AI to any AI agent via the Model Context Protocol.
 ---
 
-Pureframe AI exposes your video library as an MCP server. Once connected, any MCP-compatible AI client can search footage, list collections, retrieve video details, and index new footage — all through natural language. Try asking your agent: *"Find the moment our CEO mentions pricing."*
+The Pureframe AI MCP server lets compatible AI clients search footage, list collections, retrieve video details, and upload footage when permitted. Try asking your agent: *"Find the segment where our CEO mentions pricing."*
 
 ## What is MCP?
 
-The Model Context Protocol (MCP) is an open standard for connecting AI clients to external tools and data sources. Instead of writing custom integration code for each AI product, you configure one MCP server and every MCP-compatible client — Claude, Cursor, VS Code, Codex, OpenCode, and others — can call it the same way.
+The Model Context Protocol (MCP) is an open standard for connecting AI clients to tools and data sources. Configure the Pureframe AI MCP server to expose its tools to a compatible client.
 
 ## How it works
 
-1. Your AI client sends a natural-language request to the model (e.g. "find the moment someone mentions churn")
-2. The model decides to call the `search_videos` tool and generates its input
-3. The MCP server forwards the call to Pureframe AI's API and returns matching clips, including `thumbnail_base64`
-4. The model reads the frame directly, in the same turn, without fetching a URL, and can answer follow-up questions about what's visible
+1. You send a natural-language request to the model.
+2. The model calls `search_videos` with a query and optional collection scope.
+3. Pureframe AI returns matching segments and supporting fields.
+4. The model uses the returned frame or text to answer and cite the source.
 
 ## Available tools
 
@@ -24,7 +24,7 @@ The Model Context Protocol (MCP) is an open standard for connecting AI clients t
 | `list_collections` | List all collections in the library |
 | `get_collection` | Get details about a specific collection: video count, total duration, storage used |
 | `get_video` | Get metadata and a presigned playback URL for a specific video |
-| `upload_video` | Upload a video file from the local filesystem into a collection for indexing. Returns a `job_id`. Local server only — not available on the remote MCP endpoint, which can't read your files. Requires a key with write permission |
+| `upload_video` | Upload a local video file to a collection for processing. Returns a `job_id`. Available only through the local server because the remote endpoint cannot read your files. Requires a key with write permission |
 | `get_job_status` | Check an indexing job's status and progress. Poll after `upload_video` until `done`, then the video is searchable |
 
 ## Next steps

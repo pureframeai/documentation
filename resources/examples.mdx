@@ -36,7 +36,7 @@ for job_id in job_ids:
 results = client.search.search(query="customer mentions renewal", collection_id=collection.data.id)
 for video in results.data:
     for seg in video.segments:
-        print(f"{video.filename} @ {seg.timestamp_start:.1f}s — {seg.score:.2f}")
+        print(f"{video.filename} @ {seg.timestamp_start:.1f}s: {seg.score:.2f}")
 ```
 
 ## Give an agent video search via MCP
@@ -51,7 +51,7 @@ Set `PUREFRAME_API_KEY` to a `read_only` key (see [API Keys](/get-started/api-ke
 
 > "Search our onboarding call recordings for anywhere a customer asks about SSO, and tell me what was said."
 
-Claude calls `search_videos`, receives clips with `thumbnail_base64` and transcribed speech, and can answer directly from what it sees and reads — no manual video scrubbing.
+Claude calls `search_videos`, receives clips with `thumbnail_base64` and transcribed speech, and can answer from that evidence without manual video scrubbing.
 
 ## Reverse image search for brand mentions
 
@@ -64,4 +64,4 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "modes=video"
 ```
 
-This restricts to `modes=video` since a static reference image has no transcript to match. Combine with `collection_id` to scope the scan to a specific library — see [Image Search](/search/image) for the full parameter reference.
+This restricts the request to `modes=video` because a static reference image has no transcript to match. Combine it with `collection_id` to scope the scan to a specific collection. See [Image search](/search/image) for the full parameter reference.

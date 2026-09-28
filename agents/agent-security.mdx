@@ -1,33 +1,34 @@
 ---
 title: Agent Security
-description: What an agent can and can't do with your library, and how to scope it safely.
+description: Limit agent access to your library and respond to compromised credentials.
 ---
 
-An agent is only as trustworthy as the credential you give it. Pureframe AI's controls for agent access are the same ones that control any API key — there's no separate agent-specific permission system.
+Agents use standard Pureframe AI API keys. The permissions on the key determine which operations the agent can request.
 
 ## Use a read-only key
 
-Create an API key with `permissions: "read_only"` specifically for agent integrations that only need to search (see [API Keys](/get-started/api-keys)). A read-only key can call `search_videos`, `list_collections`, `get_collection`, and `get_video`, but not `upload_video` or any write/delete operation — even if a prompt injection attempt tries to talk the model into it.
+Create a separate `read_only` key for an agent that only needs to search. A read-only key can use `search_videos`, `list_collections`, `get_collection`, and `get_video`. It cannot use `upload_video` or other write operations.
 
-```bash
-curl -X POST https://api.pureframe.ai/v1/api_keys \
-  -H "Authorization: Bearer <session-token>" \
-  -H "Content-Type: application/json" \
-  -d '{ "name": "Claude Code — read only", "permissions": "read_only" }'
-```
+Create the key from [Settings → API Keys](https://platform.pureframe.ai/settings/api-keys). Key management requires an authenticated dashboard session.
 
-## What's scoped, and what isn't
+## Understand the scope
 
-An API key is scoped to your account — it can access every collection and video you own, and nothing outside your account. There's currently no way to restrict a key to a subset of collections (a "this agent can only see the Marketing collection" allowlist doesn't exist yet). If you need to give an agent narrower access than your whole library, the practical option today is a separate Pureframe AI account holding only the collections that agent should see.
+An API key can access the resources permitted for its account. You cannot currently restrict a key to selected collections.
+
+If an agent must see only a subset of content, place that content in a separate Pureframe AI account and issue a key for that account.
+
+<Warning>
+  A read-only key limits writes, but it does not prevent an agent from reading sensitive content available to that account.
+</Warning>
 
 ## Revocation is immediate
 
-If an agent integration is compromised or misbehaving, revoke its key from the [API Keys dashboard](https://platform.pureframe.ai/settings/api-keys) — in-flight and future requests using it are rejected within seconds. Keys are stored as a SHA-256 hash server-side, so Pureframe AI can't recover or display the plain secret after creation, only revoke it.
+If a key is exposed or an integration behaves unexpectedly, revoke the key from [Settings → API Keys](https://platform.pureframe.ai/settings/api-keys). Replace it with a new key only after you identify and correct the exposure.
 
 ## Rate limits apply the same way
 
-Agent tool calls share the same per-key rate limits as direct REST calls — 30 requests/minute for `search_videos`. A runaway agent loop hits `429`s, not unlimited API usage. See [Rate Limits](/production/rate-limits).
+Agent tool calls count toward per-key rate limits. Handle `429` responses and cap the number of tool calls your agent can make for one user request. See [Rate limits](/production/rate-limits).
 
 ## Remote MCP authentication
 
-The hosted remote MCP endpoint (`https://mcp.pureframe.ai`) authenticates the same way as the REST API — a Bearer token in the `Authorization` header, passed through by your MCP client's config. There's no separate remote-specific credential type.
+The remote MCP endpoint uses a Bearer token in the `Authorization` header. Store the token in your client's secret or environment configuration. Do not place it in prompts, logs, or source control.

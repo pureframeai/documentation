@@ -3,7 +3,7 @@ title: Text Search
 description: Find moments using a natural language description.
 ---
 
-Send a plain-language description in the `query` field. Pureframe AI searches visual content and speech simultaneously by default — no need to know in advance whether the moment you want is something someone said or something that appeared on screen.
+Send a plain-language description in `query`. By default, Pureframe AI searches both visual and spoken content.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -12,15 +12,21 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "collection_id=col_abc123"
 ```
 
-`collection_id` is required for text-only queries — unlike image search, there's no whole-library text search today.
+`collection_id` is required for text-only queries. Image search can search across your account without a collection filter.
 
 ## How matching works
 
-A text query is embedded with the same visual encoder used to index frames, so it can match `frame` segments by conceptual similarity even when no words overlap with anything spoken. In parallel, the raw query runs against transcript text via full-text search, matching `transcript` segments on shared vocabulary. See [Combined Queries](/search/combined-queries) for how the two are merged.
+A text query can match:
+
+- Visual content that is conceptually similar to the description
+- Spoken content that contains relevant wording
+- Scene labels and on-screen text, when available
+
+See [Combined queries](/search/combined-queries) to restrict the active signals.
 
 ## Natural language queries
 
-For longer or more conversational queries — `"find the best tracking shots of someone running on a rooftop"` — set `natural_language=true`. An LLM decomposition step parses the query into a structured visual/transcript split before it hits the underlying search, rather than embedding the raw sentence as-is.
+Set `natural_language=true` for longer, conversational requests such as `find the moment someone mentions the annual contract`.
 
 ```bash
 curl -X POST https://api.pureframe.ai/v1/search \
@@ -30,8 +36,14 @@ curl -X POST https://api.pureframe.ai/v1/search \
   -F "collection_id=col_abc123"
 ```
 
-This is available on paid plans. The web app and MCP server enable it automatically for queries that look conversational; the flag is opt-in for direct REST and SDK calls.
+Natural-language search is available on paid plans. Set the flag explicitly when you call the REST API or an SDK.
 
-## No results?
+## Improve weak results
 
-If a query returns nothing, Pureframe AI automatically tries up to two LLM-generated rephrasings of the same query before giving up — this only fires when the literal query found zero matches, so it doesn't add latency to queries that already work.
+If a query returns no useful results:
+
+1. Confirm that the video status is `done`.
+2. Confirm that `collection_id` identifies the intended collection.
+3. Use concrete visual details or wording likely to appear in speech.
+4. Try one search mode at a time to identify which signal works best.
+5. Use `natural_language=true` for a longer request.

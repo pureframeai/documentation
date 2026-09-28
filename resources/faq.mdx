@@ -23,7 +23,7 @@ MP4, MOV, AVI, WebM, MPEG, and MKV. Maximum file size is 5 GB per upload. To inc
 
 **How long does indexing take?**
 
-Typically 1–3 minutes per 10 minutes of video, depending on server load. Poll `GET /v1/jobs/{job_id}` to track progress — see [Processing Status](/video-processing/processing-status).
+Processing time depends on the video's length, format, content, and current demand. Poll `GET /v1/jobs/{job_id}` or use webhooks to track completion. See [Processing status](/video-processing/processing-status).
 
 **Can I search a video before it finishes processing?**
 
@@ -39,7 +39,7 @@ The job status becomes `failed`. Re-upload the video to create a new job. If fai
 
 **Can I search across all my videos at once?**
 
-For image search, yes — omit `collection_id` to search your entire library. Text search currently requires `collection_id`.
+For image search, yes: omit `collection_id` to search your entire library. Text search currently requires `collection_id`.
 
 **What does `thumbnail_base64` contain?**
 
@@ -47,7 +47,7 @@ A base64-encoded JPEG image of the matched video frame. Vision-capable models (C
 
 **Why are presigned URLs only valid for ~1 hour?**
 
-`video_url` and `thumbnail_url` are short-lived presigned URLs for security. Don't store them — store the `video_id` and re-fetch the URL when you need to display or stream it.
+`video_url` and `thumbnail_url` are short-lived presigned URLs for security. Don't store them: store the `video_id` and re-fetch the URL when you need to display or stream it.
 
 **What signal types can a search match?**
 
@@ -55,7 +55,7 @@ Four: `frame` (visual content), `transcript` (spoken words), `scene` (auto-detec
 
 ---
 
-## Agent Vision
+## Agent vision
 
 **Which AI clients support the Pureframe AI MCP server?**
 
@@ -71,7 +71,7 @@ No. The remote MCP server at `https://mcp.pureframe.ai` runs on Pureframe AI's i
 
 **How are credits consumed?**
 
-Each search request consumes 1 credit on Pay as you go accounts. Video processing costs $0.038 per minute of video, plus $0.005/minute if captioning is enabled. Free accounts have a daily search quota of 30 and 500 MB of storage — no credits needed. See [Usage and Billing](/production/usage-and-billing).
+Pay as you go search charges depend on the query type. Video processing costs $0.038 per minute, plus $0.005 per minute when captioning is enabled. Free accounts have a daily search quota and a storage limit. See [Usage and billing](/production/usage-and-billing) for current values.
 
 **What happens when I run out of credits?**
 

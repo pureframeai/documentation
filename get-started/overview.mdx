@@ -1,24 +1,24 @@
 ---
 title: Overview
-description: Video intelligence API — find any moment in your footage with text or an image.
+description: Upload videos and retrieve relevant, timestamped moments with text or images.
 ---
 
-Pureframe AI is a video intelligence API. Upload your footage and Pureframe AI indexes every frame and every spoken word — then you can find any moment with a natural language query, a reference image, or both.
+Pureframe AI is a video search API. Upload your footage, wait for processing to finish, and retrieve relevant timestamped segments with a text query, a reference image, or both.
 
 ## How it works
 
 <Steps>
   <Step title="Upload">
-    Send a video file to `POST /v1/upload` with a `collection_id`. Pureframe AI returns a `job_id` immediately — processing runs in the background.
+    Send a video file to `POST /v1/upload` with a `collection_id`. Pureframe AI returns a `job_id` immediately: processing runs in the background.
   </Step>
   <Step title="Index">
-    Pureframe AI extracts frames, generates visual embeddings, and transcribes speech. The job moves through `queued → processing → done`. Poll `GET /v1/jobs/{job_id}` for live progress.
+    Pureframe AI prepares visual, transcript, and on-screen text signals. The job moves through `queued → processing → done`. Poll `GET /v1/jobs/{job_id}` for progress.
   </Step>
   <Step title="Search">
-    Send a text query, an image file, or an image URL to `POST /v1/search`. Results are ranked, timestamped segments with presigned video URLs, frame thumbnails, and transcribed speech.
+    Send a text query, image file, or image URL to `POST /v1/search`. Results contain ranked segments, timestamps, playback URLs, thumbnails, and matching transcript text when available.
   </Step>
   <Step title="Use the clips">
-    Each result includes `thumbnail_base64` — a base64-encoded JPEG that vision-capable models can consume directly, without fetching a URL.
+    Each result includes `thumbnail_base64`: a base64-encoded JPEG that vision-capable models can consume directly, without fetching a URL.
   </Step>
 </Steps>
 
@@ -67,7 +67,7 @@ See [Errors](/production/errors) for the full list.
     Upload a video and run your first search in under 5 minutes.
   </Card>
   <Card title="Key Concepts" icon="lightbulb" href="/get-started/key-concepts">
-    The mental model — collections, jobs, modalities, credits.
+    The mental model: collections, jobs, modalities, credits.
   </Card>
   <Card title="Search" icon="magnifying-glass" href="/search/overview">
     Text, image, and transcript search, and how they combine.
